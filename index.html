@@ -14,7 +14,9 @@
 		header { display: flex; justify-content: space-between; align-items: center; padding: 1.4rem 0; border-bottom: 1px solid #ffffff1a; }
 		.brand { display: flex; align-items: center; gap: .7rem; color: #fff4cf; font-weight: 800; letter-spacing: .12em; text-decoration: none; }
 		.mark { display: grid; place-items: center; width: 2.35rem; height: 2.35rem; color: #07111f; background: linear-gradient(145deg, #fff1a6, #d99a25); border-radius: .65rem; font-weight: 900; }
-		nav { display: flex; gap: 1.2rem; } nav a { color: var(--muted); text-decoration: none; } nav a:hover { color: var(--gold); }
+		nav { display: flex; align-items: center; gap: 1.2rem; } nav a { color: var(--muted); text-decoration: none; } nav a:hover { color: var(--gold); }
+		.language-switch { display: inline-flex; align-items: center; gap: .35rem; padding-left: .8rem; border-left: 1px solid #ffffff2b; font-size: .85rem; }
+		.language-switch .active { color: var(--gold); font-weight: 800; }
 		.hero { padding: clamp(5rem, 12vw, 9rem) 0 5rem; }
 		.eyebrow { color: var(--cyan); font-size: .75rem; font-weight: 800; letter-spacing: .18em; }
 		h1 { max-width: 850px; margin: 1rem 0 1.5rem; font-size: clamp(3rem, 8vw, 6.8rem); line-height: .94; letter-spacing: -.06em; }
@@ -34,7 +36,7 @@
 	<div class="wrap">
 		<header>
 			<a class="brand" href="/"><span class="mark" aria-hidden="true">W</span><span>WORD BATTLE</span></a>
-			<nav aria-label="Ana menü"><a href="/privacy.html">Gizlilik</a><a href="/terms.html">Koşullar</a><a href="/app-ads.txt">app-ads.txt</a></nav>
+			<nav aria-label="Ana menü"><a href="/privacy.html">Gizlilik</a><a href="/terms.html">Koşullar</a><a href="/app-ads.txt">app-ads.txt</a><span class="language-switch" aria-label="Dil"><span class="active">TR</span><span>|</span><a href="/index-en.html">EN</a></span></nav>
 		</header>
 		<main>
 			<section class="hero">

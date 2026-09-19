@@ -59,10 +59,22 @@
     a:hover {
       text-decoration: underline;
     }
+    .language-switch {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    .language-switch .active {
+      color: var(--gold);
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
   <div class="container">
+    <div class="language-switch"><a class="active" href="/terms.html">TR</a><span>|</span><a href="/terms-en.html">EN</a></div>
     <h1>Kullanım Şartları (Terms of Use / EULA)</h1>
     <div class="date">Son Güncelleme: 10 Eylül 2026 • Word Battle: Kelime Savaşı</div>
 
