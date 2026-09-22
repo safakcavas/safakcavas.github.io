@@ -677,16 +677,16 @@
         <div class="kpi-subtext" id="kpiActive24hSub">Son 24 saatte açılan cihaz</div>
       </div>
 
-      <div class="kpi-card gold" style="cursor: pointer;" title="Sadece test cihazlarını filtrele" onclick="setTrafficTypeFilter('BOT'); scrollToTable();">
-        <div class="kpi-title">🤖 Play Store Test Cihazları</div>
+      <div class="kpi-card gold" style="cursor: pointer;" title="Test ve pasif cihazları filtrele" onclick="setTrafficTypeFilter('BOT'); scrollToTable();">
+        <div class="kpi-title">🤖 Test & Pasif Cihazlar</div>
         <div class="kpi-value" id="kpiBotCount">--</div>
-        <div class="kpi-subtext" id="kpiBotCountSub">Google APAC / Robo Test ➔</div>
+        <div class="kpi-subtext" id="kpiBotCountSub">Google / Apple / Oynamayan ➔</div>
       </div>
 
-      <div class="kpi-card emerald" style="cursor: pointer;" title="Sadece gerçek oyuncuları filtrele" onclick="setTrafficTypeFilter('REAL'); scrollToTable();">
-        <div class="kpi-title">👤 Organik / İlerleyen Oyuncular</div>
+      <div class="kpi-card emerald" style="cursor: pointer;" title="Sadece oyunu fiilen oynayanları filtrele" onclick="setTrafficTypeFilter('REAL'); scrollToTable();">
+        <div class="kpi-title">👤 Gerçek / Aktif Oyuncular</div>
         <div class="kpi-value" id="kpiRealUsers">--</div>
-        <div class="kpi-subtext" id="kpiRealUsersSub">Bölüm geçen aktif oyuncu ➔</div>
+        <div class="kpi-subtext" id="kpiRealUsersSub">Bölüm geçen / Ödül kazanan ➔</div>
       </div>
     </div>
 
@@ -743,11 +743,11 @@
           <span class="type-pill-count" id="typeCountAll">0</span>
         </button>
         <button class="traffic-type-btn btn-real" id="btnTypeReal" onclick="setTrafficTypeFilter('REAL')">
-          <span>👤 Gerçek Oyuncular</span>
+          <span>👤 Aktif Oyuncular</span>
           <span class="type-pill-count" id="typeCountReal">0</span>
         </button>
         <button class="traffic-type-btn btn-bot" id="btnTypeBot" onclick="setTrafficTypeFilter('BOT')">
-          <span>🤖 Test Cihazları</span>
+          <span>🤖 Test & Pasif</span>
           <span class="type-pill-count" id="typeCountBot">0</span>
         </button>
       </div>
@@ -756,10 +756,10 @@
       <div class="emulator-filter-card">
         <label class="emulator-toggle-label">
           <input type="checkbox" id="excludeEmulatorsToggle" checked onchange="toggleExcludeEmulators()" />
-          <span style="font-weight: 800; font-size: 13px;">🚫 Emülatör ve Test Botlarını Listeden Çıkar</span>
+          <span style="font-weight: 800; font-size: 13px;">🚫 Test & Pasif Cihazları Listeden Çıkar (Sadece Oynayanlar)</span>
         </label>
         <div class="emulator-status-pill" id="emulatorStatusPill">
-          🛡️ <span id="hiddenEmulatorCount">0</span> test emülatörü gizlendi (listeden çıkarıldı)
+          🛡️ <span id="hiddenEmulatorCount">0</span> test/pasif cihaz gizlendi
         </div>
       </div>
 
@@ -920,9 +920,9 @@
       if (countEl) countEl.textContent = botCount;
       if (pill) {
         if (excludeEmulators) {
-          pill.innerHTML = `🛡️ <strong style="color: var(--emerald);">${botCount}</strong> test emülatörü gizlendi (listeden çıkarıldı)`;
+          pill.innerHTML = `🛡️ <strong style="color: var(--emerald);">${botCount}</strong> test / pasif cihaz gizlendi (sadece oynayanlar listede)`;
         } else {
-          pill.innerHTML = `⚠️ Tüm cihazlar (emülatörler dahil) gösteriliyor`;
+          pill.innerHTML = `⚠️ Tüm cihazlar (testler & pasifler dahil) gösteriliyor`;
         }
       }
     }
@@ -945,12 +945,13 @@
       return map[screenName] || `📱 ${screenName}`;
     }
 
-    // Çok faktörlü otomatik sınıflandırma & emülatör teşhis motoru
+    // Çok faktörlü katı sınıflandırma & emülatör/pasif teşhis motoru
     function classifyPlayer(player) {
       const lvl = player.currentLevel || 1;
       const coins = player.coins ?? 250;
       const gems = player.gems ?? 0;
       const isAndroid = (player.platform || '').toLowerCase().includes('android');
+      const isIOS = (player.platform || '').toLowerCase().includes('ios') || (player.platform || '').toLowerCase().includes('iphone') || (player.platform || '').toLowerCase().includes('ipad');
       const isUntouched = (lvl === 1 && coins === 250 && gems === 0);
 
       const model = (player.deviceModel || '').toLowerCase();
@@ -959,30 +960,45 @@
       const isEmulatorModel = /emulator|sdk|generic|vbox|goldfish|ranchu|cuttlefish/i.test(model);
       const isDataCenter = /google|amazon|cloud|datacenter/i.test(isp);
 
-      const isBot = isEmulatorExplicit || isEmulatorModel || isDataCenter || (isUntouched && isAndroid);
+      // KATI KURAL: Donanım emülatörü, veri merkezi VEYA hiç oynamamış (250🪙 / Seviye 1 / 0💎) tüm cihazlar (iOS dahil) test/pasif sayılır
+      const isBot = isEmulatorExplicit || isEmulatorModel || isDataCenter || isUntouched;
 
       if (isBot) {
-        let reason = 'Google Robo-test (Dokunulmamış bakiye)';
+        let reason = isIOS ? 'Apple İnceleme / Açıp Oynamamış' : 'Google Robo-test / Açıp Oynamamış';
+        let label = '🤖 Test / Pasif Cihaz';
         if (isEmulatorExplicit || isEmulatorModel) {
           reason = `Emülatör Donanımı (${player.deviceModel || 'x86 SDK'})`;
+          label = '🤖 Donanım Emülatörü';
         } else if (isDataCenter) {
           reason = `Bulut Veri Merkezi ISP (${player.isp})`;
+          label = '☁️ Bulut Test Sunucusu';
+        } else if (isUntouched) {
+          if (isIOS) {
+            reason = 'Apple İnceleme Ekibi / Pasif (Dokunulmamış: 250🪙 / Lv. 1)';
+            label = '🍎 Apple Test / Pasif';
+          } else {
+            reason = 'Google Robo-test / Pasif (Dokunulmamış: 250🪙 / Lv. 1)';
+            label = '🤖 Play Store Botu / Pasif';
+          }
         }
 
         return {
           type: 'bot_google',
-          label: '🤖 Emülatör / Test Botu',
+          label,
           badgeClass: 'badge-bot',
           reason,
           isBot: true,
         };
       }
 
+      // Oyunu fiilen oynamış (coin kazanmış/harcamış veya seviye atlamış)
+      const diffCoin = coins - 250;
+      const progressDetail = lvl > 1 ? `Seviye ${lvl}` : (diffCoin > 0 ? `+${diffCoin}🪙 Ödül Kazandı` : `${coins}🪙`);
       return {
         type: 'real_active',
-        label: '👤 Gerçek Kullanıcı',
+        label: '👤 Gerçek / Aktif Oyuncu',
         badgeClass: 'badge-user',
-        reason: `Seviye ${lvl} • ${coins.toLocaleString('tr-TR')}🪙 / ${gems}💎`,
+        reason: `${progressDetail} • ${coins.toLocaleString('tr-TR')}🪙 / ${gems}💎 (Oyunu Oynadı)`,
         isBot: false,
       };
     }
