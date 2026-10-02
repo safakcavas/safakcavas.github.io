@@ -626,6 +626,115 @@
       padding: 40px 20px;
       color: var(--muted);
     }
+
+    /* Admin Edit Modal Styles */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 16px;
+    }
+    .modal-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      width: 100%;
+      max-width: 440px;
+      overflow: hidden;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .modal-header h2 {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-heading);
+    }
+    .btn-close {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .btn-close:hover {
+      color: var(--text-heading);
+    }
+    .modal-body {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-heading);
+    }
+    .form-input {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 600;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .form-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 16px 22px;
+      border-top: 1px solid var(--card-border);
+      background: rgba(0, 0, 0, 0.1);
+    }
+    .btn-edit {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: var(--gold);
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-edit:hover {
+      background: var(--gold);
+      color: #09090b;
+      transform: translateY(-1px);
+    }
   </style>
 </head>
 <body>
@@ -687,6 +796,12 @@
         <div class="kpi-title">👤 Gerçek / Aktif Oyuncular</div>
         <div class="kpi-value" id="kpiRealUsers">--</div>
         <div class="kpi-subtext" id="kpiRealUsersSub">Bölüm geçen / Ödül kazanan ➔</div>
+      </div>
+
+      <div class="kpi-card gold" style="cursor: pointer;" title="Mağaza puanlama yapanları ara" onclick="document.getElementById('tableSearch').value='puan'; renderTrafficTable(); scrollToTable();">
+        <div class="kpi-title">⭐ Mağaza Puanlama</div>
+        <div class="kpi-value" id="kpiRatedCount">--</div>
+        <div class="kpi-subtext" id="kpiRatedCountSub">Puanlayan / Ödül alan ➔</div>
       </div>
     </div>
 
@@ -776,17 +891,55 @@
               <th>📱 Cihaz & Model</th>
               <th>🚪 Son Çıkış Ekranı</th>
               <th>Trafik / Donanım Türü</th>
-              <th>Sürüm & Seviye</th>
+              <th>🪙 Bakiye & Seviye</th>
+              <th>⭐ Mağaza Puanı</th>
               <th>Son Görülme</th>
               <th>Cihaz Kimliği (ID)</th>
+              <th>⚡ İşlem</th>
             </tr>
           </thead>
           <tbody id="trafficTableBody">
             <tr>
-              <td colspan="7" class="empty-state">Veriler yükleniyor...</td>
+              <td colspan="9" class="empty-state">Veriler yükleniyor...</td>
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- Edit Player Modal (Firebase Canlı Güncelleme) -->
+    <div id="editPlayerModal" class="modal-backdrop" style="display: none;">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2>✏️ Oyuncu Bilgilerini Güncelle (Firebase)</h2>
+          <button class="btn-close" onclick="closeEditModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">
+            Cihaz ID: <code id="modalDeviceId" style="color: var(--gold); font-weight: bold;">--</code>
+          </div>
+          <div class="form-group">
+            <label>🪙 Altın (Coins):</label>
+            <input type="number" id="modalCoins" class="form-input" min="0" max="9999999" />
+          </div>
+          <div class="form-group">
+            <label>💎 Elmas (Gems):</label>
+            <input type="number" id="modalGems" class="form-input" min="0" max="999999" />
+          </div>
+          <div class="form-group">
+            <label>⚡ Can / Enerji (0-5):</label>
+            <input type="number" id="modalEnergy" class="form-input" min="0" max="5" />
+          </div>
+          <div class="form-group">
+            <label>🗺️ Bölüm / Seviye (1-200):</label>
+            <input type="number" id="modalLevel" class="form-input" min="1" max="200" />
+          </div>
+          <div id="modalStatus" style="font-size: 13px; font-weight: 600; margin-top: 6px; display: none;"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeEditModal()">İptal</button>
+          <button class="btn btn-primary" id="modalSaveBtn" onclick="savePlayerUpdates()">💾 Firebase'e Kaydet</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1100,6 +1253,14 @@
       document.getElementById('kpiBotCount').textContent = bots;
       document.getElementById('kpiRealUsers').textContent = real;
 
+      // 5. Store Rating KPI
+      const rateClickedCount = allPlayers.filter(p => p.hasClickedRate || p.hasClaimedRateReward).length;
+      const rateClaimedCount = allPlayers.filter(p => p.hasClaimedRateReward).length;
+      const kpiRatedEl = document.getElementById('kpiRatedCount');
+      if (kpiRatedEl) kpiRatedEl.textContent = rateClickedCount;
+      const kpiRatedSub = document.getElementById('kpiRatedCountSub');
+      if (kpiRatedSub) kpiRatedSub.textContent = `${rateClaimedCount} oyuncu 100💎 aldı`;
+
       // Update Traffic Type tab counters
       const countAll = document.getElementById('typeCountAll');
       const countReal = document.getElementById('typeCountReal');
@@ -1349,7 +1510,8 @@
         // 3. Search Filter
         if (!search) return true;
         const cInfo = getCountryInfo(lang);
-        const text = `${p.id} ${p.platform} ${p.deviceModel || ''} ${p.city || ''} ${p.country || ''} ${p.lastScreen || ''} ${p.isp || ''} ${lang} ${cInfo.name} ${p.appVersion} ${classification.label}`.toLowerCase();
+        const rateKeyword = (p.hasClickedRate || p.hasClaimedRateReward) ? 'puan puanla puanlama star rate' : '';
+        const text = `${p.id} ${p.platform} ${p.deviceModel || ''} ${p.city || ''} ${p.country || ''} ${p.lastScreen || ''} ${p.isp || ''} ${lang} ${cInfo.name} ${p.appVersion} ${classification.label} ${rateKeyword}`.toLowerCase();
         return text.includes(search);
       });
 
@@ -1360,7 +1522,7 @@
         if (excludeEmulators) {
           emptyMsg += ' (Emülatörler listeden çıkarıldı, görmek için yukarıdaki kutucuk işaretini kaldırabilirsiniz).';
         }
-        tbody.innerHTML = `<tr><td colspan="7" class="empty-state">${emptyMsg}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="empty-state">${emptyMsg}</td></tr>`;
         return;
       }
 
@@ -1382,6 +1544,12 @@
         const locationSub = p.isp ? `${p.isp} • ${p.timezone || cInfo.code}` : (p.timezone || `${cInfo.code} Bölgesi`);
 
         const deviceTitle = p.deviceModel || (isAndroid ? 'Android Cihaz' : 'iPhone / iPad');
+
+        const rateStatusBadge = p.hasClaimedRateReward
+          ? `<span class="badge" style="background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; color: #fbbf24; font-weight: 800;">⭐ 100💎 Alındı</span>`
+          : p.hasClickedRate
+          ? `<span class="badge" style="background: rgba(56, 189, 248, 0.2); border: 1px solid #38bdf8; color: #38bdf8; font-weight: 700;">⭐ Tıkladı (Gitti)</span>`
+          : `<span style="color: var(--muted); font-size: 11px;">Tıklamadı</span>`;
 
         return `
           <tr>
@@ -1410,17 +1578,119 @@
               <div style="font-size: 10px; color: var(--muted); margin-top: 3px;">${classification.reason}</div>
             </td>
             <td>
-              <div><span class="badge badge-version">v${p.appVersion || '1.0.4'}</span></div>
-              <div style="margin-top: 3px; font-weight: 700; color: var(--text-heading);">Lv. ${p.currentLevel || 1}</div>
+              <div style="font-weight: 800; color: var(--gold); font-size: 13px;">${(p.coins ?? 250).toLocaleString('tr-TR')} 🪙</div>
+              <div style="color: #38bdf8; font-size: 11px; margin-top: 2px; font-weight: 700;">${p.gems ?? 0} 💎 • ${p.energy ?? 5}/5 ⚡</div>
+              <div style="color: var(--muted); font-size: 11px; margin-top: 2px;">Lv. ${p.currentLevel || 1} • <span class="badge badge-version">v${p.appVersion || '1.0.4'}</span></div>
+            </td>
+            <td>
+              <div>${rateStatusBadge}</div>
+              ${p.rateClickedAt ? `<div style="font-size: 10px; color: var(--muted); margin-top: 2px;">${formatTimeAgo(p.rateClickedAt)}</div>` : ''}
             </td>
             <td>
               <div style="font-weight: 600;">${formatTimeAgo(p.lastSeenAt || p.updatedAt)}</div>
               <div style="font-size: 10px; color: var(--muted); margin-top: 2px;">${fullDate}</div>
             </td>
             <td><span class="device-id-code">${p.id}</span></td>
+            <td>
+              <button class="btn-edit" onclick="openEditModal('${p.id}')">✏️ Düzenle</button>
+            </td>
           </tr>
         `;
       }).join('');
+    }
+
+    // Modal Admin İşlemleri
+    let currentEditDeviceId = null;
+
+    function openEditModal(deviceId) {
+      const player = allPlayers.find(p => p.id === deviceId);
+      if (!player) return;
+
+      currentEditDeviceId = deviceId;
+      document.getElementById('modalDeviceId').textContent = deviceId;
+      document.getElementById('modalCoins').value = player.coins ?? 250;
+      document.getElementById('modalGems').value = player.gems ?? 0;
+      document.getElementById('modalEnergy').value = player.energy ?? 5;
+      document.getElementById('modalLevel').value = player.currentLevel ?? 1;
+
+      const statusEl = document.getElementById('modalStatus');
+      statusEl.style.display = 'none';
+      statusEl.textContent = '';
+
+      document.getElementById('editPlayerModal').style.display = 'flex';
+    }
+
+    function closeEditModal() {
+      document.getElementById('editPlayerModal').style.display = 'none';
+      currentEditDeviceId = null;
+    }
+
+    async function savePlayerUpdates() {
+      if (!currentEditDeviceId) return;
+      const saveBtn = document.getElementById('modalSaveBtn');
+      const statusEl = document.getElementById('modalStatus');
+
+      const coins = parseInt(document.getElementById('modalCoins').value, 10) || 0;
+      const gems = parseInt(document.getElementById('modalGems').value, 10) || 0;
+      const energy = parseInt(document.getElementById('modalEnergy').value, 10) || 0;
+      const currentLevel = parseInt(document.getElementById('modalLevel').value, 10) || 1;
+
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '⏳ Kaydediliyor...';
+      statusEl.style.display = 'block';
+      statusEl.style.color = 'var(--muted)';
+      statusEl.textContent = 'Firebase Firestore güncelleniyor...';
+
+      const updateTimestamp = new Date().toISOString();
+      const patchUrl = `${FIRESTORE_REST_URL.split('?')[0]}/${encodeURIComponent(currentEditDeviceId)}?key=${FIRESTORE_API_KEY}&updateMask.fieldPaths=coins&updateMask.fieldPaths=gems&updateMask.fieldPaths=energy&updateMask.fieldPaths=currentLevel&updateMask.fieldPaths=adminUpdateTimestamp&updateMask.fieldPaths=updatedAt`;
+
+      const payload = {
+        fields: {
+          coins: { integerValue: String(coins) },
+          gems: { integerValue: String(gems) },
+          energy: { integerValue: String(energy) },
+          currentLevel: { integerValue: String(currentLevel) },
+          adminUpdateTimestamp: { stringValue: updateTimestamp },
+          updatedAt: { stringValue: updateTimestamp },
+        }
+      };
+
+      try {
+        const res = await fetch(patchUrl, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        // Yerel listeyi güncelle
+        const player = allPlayers.find(p => p.id === currentEditDeviceId);
+        if (player) {
+          player.coins = coins;
+          player.gems = gems;
+          player.energy = energy;
+          player.currentLevel = currentLevel;
+          player.adminUpdateTimestamp = updateTimestamp;
+        }
+
+        statusEl.style.color = 'var(--emerald)';
+        statusEl.textContent = '✅ Başarıyla kaydedildi! Oyuncu oyunu açtığında bakiyesi anında güncellenecek.';
+
+        setTimeout(() => {
+          closeEditModal();
+          renderTrafficTable();
+        }, 1200);
+      } catch (err) {
+        console.error('[Dashboard] Save error:', err);
+        statusEl.style.color = 'var(--rose)';
+        statusEl.textContent = '❌ Güncelleme hatası: ' + err.message;
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '💾 Firebase\'e Kaydet';
+      }
     }
 
     // Initial fetch & Auto-refresh every 25 seconds
