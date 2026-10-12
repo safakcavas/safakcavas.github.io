@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Word Battle: Kelime Savaşı — Ücretsiz İndir</title>
+  
+  <!-- Open Graph & Social Cards (TikTok, WhatsApp, Instagram) -->
+  <meta property="og:title" content="⚔️ Word Battle: Kelime Savaşı — Ücretsiz İndir">
+  <meta property="og:description" content="Kelimeleri birleştir, güçlü vuruşlar yap ve canavarları yen! App Store ve Google Play'de ücretsiz.">
+  <meta property="og:image" content="./assets/icon.png">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#090e17">
+  
+  <link rel="icon" type="image/png" href="./assets/icon.png">
+
+  <style>
+    :root {
+      --bg: #090e17;
+      --card-bg: rgba(18, 28, 45, 0.85);
+      --border: rgba(255, 255, 255, 0.1);
+      --gold: #f5a623;
+      --accent: #00d2ff;
+      --green: #2ecc71;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background: var(--bg);
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 210, 255, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 50% 100%, rgba(245, 166, 35, 0.1) 0%, transparent 60%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      animation: fadeIn 0.4s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* GAME ICON */
+    .icon-wrapper {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .game-icon {
+      width: 120px;
+      height: 120px;
+      border-radius: 28px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.15);
+      display: block;
+      object-fit: cover;
+      background: #141c28;
+    }
+    .icon-badge {
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #f5a623, #d97706);
+      color: #000;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(245, 166, 35, 0.4);
+      white-space: nowrap;
+      text-transform: uppercase;
+    }
+
+    /* TITLES */
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      line-height: 1.2;
+    }
+    p.subtitle {
+      font-size: 15px;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    p.tagline {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 20px;
+      max-width: 340px;
+    }
+
+    /* SOCIAL PROOF RATING */
+    .rating-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 26px;
+    }
+    .stars {
+      color: #f5a623;
+      letter-spacing: 1px;
+      font-size: 14px;
+    }
+    .rating-val {
+      color: #fff;
+      font-weight: 800;
+    }
+
+    /* BUTTONS CONTAINER */
+    .buttons-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    /* STORE BUTTON BASE */
+    .store-btn {
+      width: 100%;
+      min-height: 64px;
+      background: #121c2d;
+      border: 1.5px solid rgba(255, 255, 255, 0.16);
+      border-radius: 18px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #fff;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+    }
+    .store-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+    .store-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* HIGHLIGHTED RECOMMENDED BUTTON (BASED ON DEVICE) */
+    .store-btn.recommended {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
+      border-color: #00d2ff;
+      box-shadow: 0 0 24px rgba(0, 210, 255, 0.35), 0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+    .store-btn.recommended.play-recommended {
+      border-color: #2ecc71;
+      box-shadow: 0 0 24px rgba(46, 204, 113, 0.35), 0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .badge-recommended {
+      position: absolute;
+      top: 6px;
+      right: 12px;
+      background: rgba(0, 210, 255, 0.2);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: none;
+    }
+    .store-btn.recommended .badge-recommended {
+      display: block;
+    }
+    .store-btn.recommended.play-recommended .badge-recommended {
+      background: rgba(46, 204, 113, 0.2);
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    /* ICON INSIDE BUTTON */
+    .store-icon {
+      width: 36px;
+      height: 36px;
+      margin-right: 16px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .store-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* TEXT INSIDE BUTTON */
+    .store-texts {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+      flex: 1;
+    }
+    .store-sub {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .store-main {
+      font-size: 19px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .arrow-icon {
+      color: var(--muted);
+      font-size: 20px;
+      margin-left: 8px;
+      transition: transform 0.2s;
+    }
+    .store-btn:hover .arrow-icon {
+      transform: translateX(3px);
+      color: #fff;
+    }
+
+    /* FEATURE BADGES */
+    .feature-pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+    .pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    /* FOOTER */
+    footer {
+      font-size: 11.5px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+    footer a {
+      color: var(--muted);
+      text-decoration: underline;
+      margin: 0 4px;
+    }
+    footer a:hover {
+      color: #fff;
+    }
+
+    /* PULSE ANIMATION ON RECOMMENDED BUTTON */
+    @keyframes pulseBtn {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+    .store-btn.recommended {
+      animation: pulseBtn 2.2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    
+    <!-- GAME ICON -->
+    <div class="icon-wrapper">
+      <img src="./assets/icon.png" alt="Word Battle İkon" class="game-icon" onerror="this.src='../assets/icon.png'">
+      <div class="icon-badge">ÜCRETSİZ</div>
+    </div>
+
+    <!-- HEADER -->
+    <h1>⚔️ Word Battle</h1>
+    <p class="subtitle">Kelime Bulmaca & RPG Savaşı</p>
+    <p class="tagline">Kelimelerinle krallığı kurtar! Harfleri birleştir, güçlü vuruşlar yap ve efsanevi canavarları yen.</p>
+
+    <!-- RATING & REVIEWS -->
+    <div class="rating-bar">
+      <span class="stars">★★★★★</span>
+      <span class="rating-val">4.9 Puan</span>
+      <span>•</span>
+      <span>100+ Bölüm</span>
+    </div>
+
+    <!-- STORE BUTTONS -->
+    <div class="buttons-container" id="buttonsContainer">
+      
+      <!-- APPLE APP STORE BUTTON -->
+      <a href="https://apps.apple.com/app/id6809814884" 
+         class="store-btn" 
+         id="btnAppStore" 
+         onclick="trackClick('appstore', 'https://apps.apple.com/app/id6809814884', 'itms-apps://itunes.apple.com/app/id6809814884'); return false;">
+        <span class="badge-recommended">✦ Cihazınız İçin</span>
+        <div class="store-icon">
+          <!-- Official Apple SVG Logo -->
+          <svg viewBox="0 0 170 170" fill="currentColor">
+            <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.69-3.04-7.67-7.85-11.96-14.41-6.1-9.33-10.86-19.82-14.28-31.48-3.42-11.66-5.13-22.85-5.13-33.57 0-15.01 3.84-27.42 11.53-37.23 7.68-9.81 17.51-14.85 29.47-15.11 4.57 0 9.79 1.15 15.66 3.44 5.87 2.3 9.4 3.44 10.6 3.44 1.41 0 5.23-1.25 11.45-3.75 6.22-2.5 11.66-3.65 16.32-3.44 12.83.65 23.06 5.53 30.68 14.65-11.2 6.74-16.69 16.19-16.48 28.36.21 9.45 3.75 17.39 10.61 23.8 6.86 6.42 15.03 10.12 24.52 11.11-2.18 6.64-4.8 13.06-7.87 19.26zM119.22 32.55c0-7.39 2.66-14.45 7.99-21.18 5.33-6.74 12.01-10.82 20.03-12.24.11.98.16 1.85.16 2.61 0 7.39-2.83 14.78-8.48 22.17-5.65 7.39-12.44 11.63-20.37 12.72-.22-1.3-.33-2.66-.33-4.08z"/>
+          </svg>
+        </div>
+        <div class="store-texts">
+          <span class="store-sub">App Store'dan</span>
+          <span class="store-main">İndirin</span>
+        </div>
+        <span class="arrow-icon">➔</span>
+      </a>
+
+      <!-- GOOGLE PLAY BUTTON -->
+      <a href="https://play.google.com/store/apps/details?id=com.safakcavas.wordbattle" 
+         class="store-btn" 
+         id="btnPlayStore"
+         onclick="trackClick('playstore', 'https://play.google.com/store/apps/details?id=com.safakcavas.wordbattle', 'market://details?id=com.safakcavas.wordbattle'); return false;">
+        <span class="badge-recommended">✦ Cihazınız İçin</span>
+        <div class="store-icon">
+          <!-- Official Google Play Multicolor SVG Logo -->
+          <svg viewBox="0 0 512 512">
+            <path fill="#4285F4" d="M47.7 29.8C42.8 35.1 40 43.1 40 53.6v404.8c0 10.5 2.8 18.5 7.7 23.8l1.3 1.3 226.7-226.7v-5.4L49 28.5l-1.3 1.3z"/>
+            <path fill="#FBBC04" d="M351 327.3l-75.3-75.3v-5.4l75.3-75.3 1.7 1 89.2 50.7c25.4 14.4 25.4 38.1 0 52.6l-89.2 50.7-1.7 1z"/>
+            <path fill="#EA4335" d="M275.7 246.6L49 483.5c8.3 8.8 22.1 9.9 37.6 1.1l189.1-107.5v-130.5z"/>
+            <path fill="#34A853" d="M275.7 246.6v-130.5L86.6 8.6C71.1-.2 57.3.9 49 9.7l226.7 236.9z"/>
+          </svg>
+        </div>
+        <div class="store-texts">
+          <span class="store-sub">Google Play'den</span>
+          <span class="store-main">Edinin</span>
+        </div>
+        <span class="arrow-icon">➔</span>
+      </a>
+
+    </div>
+
+    <!-- FEATURE PILLS -->
+    <div class="feature-pills">
+      <div class="pill"><span>🛡️</span> İnternetsiz Oyna</div>
+      <div class="pill"><span>🧠</span> Zeka & Hafıza</div>
+      <div class="pill"><span>⚔️</span> RPG Savaşları</div>
+      <div class="pill"><span>👑</span> 8 Kahraman</div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <p>Şafak Çavaş © 2026 Word Battle</p>
+      <p style="margin-top: 4px;">
+        <a href="./privacy.html">Gizlilik Politikası</a> • 
+        <a href="./terms.html">Kullanım Şartları</a>
+      </p>
+    </footer>
+
+  </div>
+
+  <script>
+    // SMART PLATFORM DETECTION & AUTO-HIGHLIGHT
+    function detectPlatform() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera;
+      const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+      const isAndroid = /android/i.test(ua);
+
+      const btnAppStore = document.getElementById('btnAppStore');
+      const btnPlayStore = document.getElementById('btnPlayStore');
+      const container = document.getElementById('buttonsContainer');
+
+      if (isIOS) {
+        btnAppStore.classList.add('recommended');
+        // Bring iOS button to the top
+        container.insertBefore(btnAppStore, btnPlayStore);
+      } else if (isAndroid) {
+        btnPlayStore.classList.add('recommended', 'play-recommended');
+        // Bring Android button to the top
+        container.insertBefore(btnPlayStore, btnAppStore);
+      }
+    }
+
+    // CLICK TRACKER & STORE OPENER (ATTEMPTS NATIVE INTENT THEN FALLBACK)
+    function trackClick(platform, webUrl, nativeScheme) {
+      // Try opening native scheme on mobile (market:// or itms-apps://)
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      
+      if (isMobile && nativeScheme) {
+        // Attempt native scheme with instant timeout fallback to web URL
+        let didNavigate = false;
+        const timer = setTimeout(() => {
+          if (!didNavigate) {
+            window.location.href = webUrl;
+          }
+        }, 600);
+
+        window.location.href = nativeScheme;
+        window.addEventListener('blur', () => {
+          didNavigate = true;
+          clearTimeout(timer);
+        }, { once: true });
+      } else {
+        window.location.href = webUrl;
+      }
+    }
+
+    // Run on load
+    detectPlatform();
+  </script>
+</body>
+</html>

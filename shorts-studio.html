@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Battle — Viral Shorts & TikTok Video Stüdyosu</title>
+  <style>
+    :root {
+      --bg: #090e17;
+      --card-bg: #121c2d;
+      --card-border: #1e2f47;
+      --accent: #00d2ff;
+      --gold: #f5a623;
+      --emerald: #2ecc71;
+      --rose: #ff4757;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-size: 28px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    p.sub {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .badge-live {
+      background: rgba(0, 210, 255, 0.15);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* SCENARIO SELECTION */
+    .scenario-nav {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .scenario-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--muted);
+      padding: 10px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .scenario-btn:hover {
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .scenario-btn.active {
+      background: #1b2a42;
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 16px rgba(0, 210, 255, 0.25);
+    }
+
+    /* MAIN GRID */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 440px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+
+    /* PHONE PREVIEW WRAPPER */
+    .preview-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .phone-mockup {
+      width: 380px;
+      height: 675px; /* 9:16 aspect ratio */
+      background: #000;
+      border: 6px solid #222f3e;
+      border-radius: 36px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.8);
+    }
+    .notch {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 18px;
+      background: #222f3e;
+      border-radius: 12px;
+      z-index: 100;
+    }
+    canvas#videoCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: #000;
+    }
+
+    /* CONTROLS */
+    .controls-panel {
+      width: 100%;
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .btn-rec {
+      background: linear-gradient(135deg, #ff4757, #ff6b81);
+      color: #fff;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 18px rgba(255, 71, 87, 0.4);
+      transition: all 0.2s;
+    }
+    .btn-rec:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(255, 71, 87, 0.6); }
+    .btn-rec:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-preview {
+      background: rgba(0, 210, 255, 0.12);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-preview:hover { background: rgba(0, 210, 255, 0.25); color: #fff; }
+
+    .status-bar {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      padding: 6px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .dot-live {
+      width: 8px;
+      height: 8px;
+      background: var(--rose);
+      border-radius: 50%;
+      animation: pulse 1s infinite alternate;
+      display: none;
+    }
+    @keyframes pulse { from { opacity: 0.3; } to { opacity: 1; transform: scale(1.2); } }
+
+    /* RIGHT SIDE - CONTENT & DISTRIBUTION */
+    .sidebar-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .sidebar-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .copy-box {
+      background: #090e17;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .copy-box-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .copy-box-text {
+      font-size: 14px;
+      color: #fff;
+      font-weight: 500;
+      line-height: 1.4;
+      padding-right: 70px;
+    }
+    .btn-copy-small {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: var(--accent);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-copy-small:hover {
+      background: var(--accent);
+      color: #000;
+    }
+
+    .tips-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .tips-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.4;
+    }
+    .tips-list strong { color: #fff; }
+
+    /* VIDEO DOWNLOAD ALERT */
+    .download-success-box {
+      display: none;
+      background: rgba(46, 204, 113, 0.15);
+      border: 1px solid var(--emerald);
+      color: #2ecc71;
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-top: 14px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎬 Word Battle — Viral Shorts & TikTok Stüdyosu</h1>
+      <p class="sub">1080x1920 (9:16) Full HD • 60 FPS • Gerçek Ses Efektleri • Tek Tıkla Otomatik Video Kaydı</p>
+    </header>
+
+    <!-- SCENARIOS -->
+    <div class="scenario-nav">
+      <button class="scenario-btn active" id="btn_kristal" onclick="setScenario('kristal')">
+        <span>⚔️</span> Senaryo 1: Zeka & Güç Kancası (KRİSTAL)
+      </button>
+      <button class="scenario-btn" id="btn_halloween" onclick="setScenario('halloween')">
+        <span>🎃</span> Senaryo 2: Cadılar Bayramı Boss (BALKABAĞI)
+      </button>
+      <button class="scenario-btn" id="btn_efsane" onclick="setScenario('efsane')">
+        <span>✨</span> Senaryo 3: Efsanevi Büyücü (EFSANE)
+      </button>
+      <button class="scenario-btn" onclick="shuffleCurrentScenario()" style="border-color: #f5a623; color: #f5a623; background: rgba(245, 166, 35, 0.1);">
+        <span>🔀</span> Harfleri Karıştır (Shuffle)
+      </button>
+    </div>
+
+    <!-- MODE SELECTOR (RAGE-BAIT vs PRO) -->
+    <div style="display: flex; justify-content: center; gap: 14px; margin-bottom: 22px; flex-wrap: wrap;">
+      <button class="mode-btn active" id="mode_fail" onclick="setPlayMode('fail')" style="background: rgba(255, 71, 87, 0.2); border: 2px solid #ff4757; color: #ff6b81; padding: 11px 22px; border-radius: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; transition: all 0.2s; box-shadow: 0 0 16px rgba(255, 71, 87, 0.3);">
+        <span>🤡</span> MOD: BECERİKSİZ OYUNCU (RAGE-BAIT / SİNİR EDEN HATA) 🔥
+      </button>
+      <button class="mode-btn" id="mode_win" onclick="setPlayMode('win')" style="background: var(--card-bg); border: 1px solid var(--card-border); color: var(--muted); padding: 11px 22px; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; transition: all 0.2s;">
+        <span>👑</span> MOD: PRO OYUNCU (KUSURSUZ ZAFER)
+      </button>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="main-grid">
+      <!-- PHONE / CANVAS PREVIEW -->
+      <div class="preview-card">
+        <div class="phone-mockup">
+          <div class="notch"></div>
+          <!-- 1080x1920 Internal Render Canvas -->
+          <canvas id="videoCanvas" width="1080" height="1920"></canvas>
+        </div>
+
+        <div class="controls-panel">
+          <button class="btn-rec" id="recordBtn" onclick="startGeneration(true)">
+            <span>🔴</span> VİDEOYU BAŞLAT VE İNDİR (FULL HD MP4/WEBM)
+          </button>
+          <button class="btn-preview" id="previewBtn" onclick="startGeneration(false)">
+            <span>👁️</span> Sadece Canlı Önizle (Kaydetmeden)
+          </button>
+          
+          <div class="status-bar">
+            <span class="dot-live" id="liveDot"></span>
+            <span id="statusText">Hazır — Başlatmak için yukarıdaki butona tıkla</span>
+          </div>
+
+          <div class="download-success-box" id="successBox">
+            🎉 Video başarıyla oluşturuldu ve İndirilenler klasörüne kaydedildi!
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDE: VIRAL PUBLISHING KIT -->
+      <div>
+        <!-- VIRAL TITLES -->
+        <div class="sidebar-card">
+          <div class="sidebar-title">
+            <span>🔥</span> Yüksek Tıklama Alan (High-CTR) Başlık Önerileri
+          </div>
+
+          <div class="copy-box">
+            <div class="copy-box-label">Başlık 1 (Zeka / Meydan Okuma)</div>
+            <div class="copy-box-text" id="title1">Sadece %1 bu kelimeyi görebiliyor! Boss'u tek vuruşta deviren kelime ne? 🤯</div>
+            <button class="btn-copy-small" onclick="copyText('title1')">Kopyala</button>
+          </div>
+
+          <div class="copy-box">
+            <div class="copy-box-label">Başlık 2 (Oyun Keşfi / Yeni Mekanik)</div>
+            <div class="copy-box-text" id="title2">Kelimelerle canavar kestiğin Türk yapımı oyun yapmışlar! ⚔️🇹🇷</div>
+            <button class="btn-copy-small" onclick="copyText('title2')">Kopyala</button>
+          </div>
+
+          <div class="copy-box">
+            <div class="copy-box-label">Başlık 3 (Bulmaca Merakı)</div>
+            <div class="copy-box-text" id="title3">Klasik kelime oyunlarından sıkılanlar için yeni favori oyun bulundu 🔥</div>
+            <button class="btn-copy-small" onclick="copyText('title3')">Kopyala</button>
+          </div>
+        </div>
+
+        <!-- CAPTION & HASHTAGS -->
+        <div class="sidebar-card">
+          <div class="sidebar-title">
+            <span>📱</span> TikTok & YouTube Shorts Açıklaması ve Etiketler
+          </div>
+
+          <div class="copy-box">
+            <div class="copy-box-label">Videonun Alt Metni (Caption)</div>
+            <div class="copy-box-text" id="captionText">Sen olsan hangi kelimeyi yazardın? Yorumlara yaz! 👇📲 Oyunu Ücretsiz İndir: Word Battle: Kelime Savaşı (App Store & Google Play)</div>
+            <button class="btn-copy-small" onclick="copyText('captionText')">Kopyala</button>
+          </div>
+
+          <div class="copy-box">
+            <div class="copy-box-label">Algoritmik Hashtag Seti</div>
+            <div class="copy-box-text" id="hashtagText">#kelimeoyunu #wordbattle #mobiloyun #türkoyun #oyunönerileri #gaming #bulmaca #keşfet #fyp #shorts</div>
+            <button class="btn-copy-small" onclick="copyText('hashtagText')">Kopyala</button>
+          </div>
+        </div>
+
+        <!-- PRO TIPS -->
+        <div class="sidebar-card">
+          <div class="sidebar-title">
+            <span>💡</span> Algoritmada Patlama Yaratacak 4 Taktik
+          </div>
+          <ul class="tips-list">
+            <li>
+              <span>⏱️</span>
+              <div><strong>İlk 2 Saniye Kuralı:</strong> Kullanıcı videoyu gördüğü ilk 2 saniyede kaydırmazsa TikTok/Shorts videoyu binlerce kişiye önerir. Videonun başındaki dev kırmızı kanca tam bunun için tasarlandı.</div>
+            </li>
+            <li>
+              <span>🎵</span>
+              <div><strong>Trend Ses Ekle:</strong> TikTok veya YouTube Shorts'a yüklerken ses seviyesini %20'ye kısıp platformun kendi "Trend Olan" hareketli müziklerinden birini arka plana ekle. Trend sesler gösterimi 5 kat artırır.</div>
+            </li>
+            <li>
+              <span>💬</span>
+              <div><strong>Yorum Tetikleyici:</strong> İlk yoruma şunu sabitle: <em>"Ben 7 harfliyi buldum, sen ilk hangi kelimeyi gördün?"</em> İnsanlar yorum yazdıkça video viral döngüye girer.</div>
+            </li>
+            <li>
+              <span>⏰</span>
+              <div><strong>En İyi Paylaşım Saatleri:</strong> Akşam <strong>19:00 - 21:30</strong> arası veya öğlen <strong>12:30 - 13:45</strong> arası organik etkileşim en yüksek düzeydedir.</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('videoCanvas');
+    const ctx = canvas.getContext('2d');
+    const W = 1080;
+    const H = 1920;
+
+    let currentScenario = 'kristal';
+    let playMode = 'fail'; // Default: 'fail' (Rage-Bait), 'win' (Pro Victory)
+    let isRunning = false;
+    let isRecording = false;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let audioCtx = null;
+    let audioDest = null;
+    let audioBuffers = {};
+
+    const SCENARIOS = {
+      kristal: {
+        hookTop: "🚨 SADECE %1 BU KELİMEYİ BULABİLİYOR! 🧠",
+        hookSub: "7 Harfle Boss'u Tek Vuruşta Yok Et!",
+        heroName: "ŞÖVALYE KAĞAN",
+        heroHp: "280 / 300",
+        bossName: "KORKUNÇ ORK (BOSS)",
+        bossMaxHp: 450,
+        word: "KRİSTAL",
+        wheelLetters: ["S", "K", "A", "R", "L", "İ", "T"],
+        sequence: [1, 3, 5, 0, 6, 2, 4], // K -> R -> İ -> S -> T -> A -> L
+        damage: 450,
+        critText: "💥 -450 KRİTİK HASAR!",
+        // Fail / Rage-Bait Mode:
+        failWord: "KAR",
+        failSequence: [1, 2, 3], // K(1) -> A(2) -> R(3)
+        failDamage: 25,
+        failCritText: "💥 -25 ZAYIF VURUŞ... 🤦‍♂️",
+        failRageHook: "BURADA 7 HARFLİ 'KRİSTAL' VARDI!",
+        failRageSub: "Kör gibi oynadı! Sen olsan ne yazardın? 😤",
+        heroImg: "assets/game/hero-knight-v2.png",
+        bossImg: "assets/game/orc.png",
+        bgImg: "assets/game/enchanted-forest.png"
+      },
+      halloween: {
+        hookTop: "🎃 CADILAR BAYRAMI ETKİNLİĞİ BAŞLADI! 🦇",
+        hookSub: "Balkabağı Lordu'na Karşı Son Hamle!",
+        heroName: "PRENSES TUĞÇE",
+        heroHp: "350 / 350",
+        bossName: "BALKABAĞI LORDU",
+        bossMaxHp: 520,
+        word: "BALKABAĞI",
+        wheelLetters: ["A", "B", "Ğ", "L", "I", "K", "A", "B", "A"],
+        sequence: [1, 0, 3, 5, 6, 7, 8, 2, 4], // B -> A -> L -> K -> A -> B -> A -> Ğ -> I
+        damage: 520,
+        critText: "🔥 -520 EFSANEVİ ULTI!",
+        // Fail / Rage-Bait Mode:
+        failWord: "BAL",
+        failSequence: [1, 0, 3], // B(1) -> A(0) -> L(3)
+        failDamage: 30,
+        failCritText: "💥 -30 CILIZ VURUŞ... 🤦‍♂️",
+        failRageHook: "BALKABAĞI DURURKEN 'BAL' MI YAZDIN?!",
+        failRageSub: "Balkabağı Lordu tek attı! 😭",
+        heroImg: "assets/game/hero-mage-v2.png",
+        bossImg: "assets/game/enemies.png",
+        bgImg: "assets/game/enchanted-forest.png"
+      },
+      efsane: {
+        hookTop: "⚔️ KLASİK KELİME OYUNLARINI UNUT! 🔥",
+        hookSub: "Her Harf Bir Kılıç Darbesi!",
+        heroName: "BÜYÜCÜ ARAS",
+        heroHp: "240 / 240",
+        bossName: "GOBLİN KRALI",
+        bossMaxHp: 380,
+        word: "EFSANE",
+        wheelLetters: ["S", "E", "A", "F", "E", "N"],
+        sequence: [1, 3, 0, 2, 5, 4], // E -> F -> S -> A -> N -> E
+        damage: 380,
+        critText: "⚡ -380 BÜYÜ DARBESİ!",
+        // Fail / Rage-Bait Mode:
+        failWord: "SAF",
+        failSequence: [0, 2, 3], // S(0) -> A(2) -> F(3)
+        failDamage: 20,
+        failCritText: "⚡ -20 ZAYIF BÜYÜ... 🤦‍♂️",
+        failRageHook: "'EFSANE'Yİ GÖREMEDİ BİLE!",
+        failRageSub: "Goblin Kralı kahramanı ezdi! 🤯",
+        heroImg: "assets/game/hero-mage-v2.png",
+        bossImg: "assets/game/orc.png",
+        bgImg: "assets/game/enchanted-forest.png"
+      }
+    };
+
+    // PRELOAD IMAGES
+    const BASE_PATH = window.location.pathname.includes('/docs/') ? '../' : './';
+    const images = {};
+    const imgUrls = {
+      knight: BASE_PATH + 'assets/game/hero-knight-v2.png',
+      mage: BASE_PATH + 'assets/game/hero-mage-v2.png',
+      orc: BASE_PATH + 'assets/game/orc.png',
+      enemies: BASE_PATH + 'assets/game/enemies.png',
+      forest: BASE_PATH + 'assets/game/enchanted-forest.png',
+      icon: BASE_PATH + 'assets/icon.png'
+    };
+    for (const [k, url] of Object.entries(imgUrls)) {
+      const img = new Image();
+      img.src = url;
+      images[k] = img;
+    }
+
+    // AUDIO SYSTEM
+    const soundUrls = {
+      heroAttack: BASE_PATH + 'assets/sounds/hero-attack.wav',
+      enemyHit: BASE_PATH + 'assets/sounds/enemy-hit.wav',
+      enemyAttack: BASE_PATH + 'assets/sounds/enemy-attack.wav',
+      defeat: BASE_PATH + 'assets/sounds/defeat.wav',
+      letterSelect: BASE_PATH + 'assets/sounds/letter-select.wav',
+      wordValid: BASE_PATH + 'assets/sounds/word-valid.wav',
+      victory: BASE_PATH + 'assets/sounds/victory.wav',
+      battleTheme: BASE_PATH + 'assets/sounds/battle-theme.wav'
+    };
+
+    async function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        audioDest = audioCtx.createMediaStreamDestination();
+      }
+      if (audioCtx.state === 'suspended') {
+        await audioCtx.resume();
+      }
+      for (const [name, url] of Object.entries(soundUrls)) {
+        if (!audioBuffers[name]) {
+          try {
+            const res = await fetch(url);
+            const arr = await res.arrayBuffer();
+            audioBuffers[name] = await audioCtx.decodeAudioData(arr);
+          } catch (e) {
+            console.warn("Audio load error:", name, e);
+          }
+        }
+      }
+    }
+
+    function playSfx(name, volume = 1.0) {
+      if (!audioCtx || !audioBuffers[name]) return;
+      try {
+        const source = audioCtx.createBufferSource();
+        source.buffer = audioBuffers[name];
+        const gain = audioCtx.createGain();
+        gain.gain.value = volume;
+        source.connect(gain);
+        gain.connect(audioCtx.destination);
+        if (audioDest) gain.connect(audioDest);
+        source.start(0);
+      } catch (e) {}
+    }
+
+    function getNodeCoord(index, total) {
+      const centerX = W / 2;
+      const centerY = 1450;
+      const radius = 280;
+      const angle = (index / total) * Math.PI * 2 - Math.PI / 2;
+      return {
+        x: centerX + Math.cos(angle) * radius,
+        y: centerY + Math.sin(angle) * radius
+      };
+    }
+
+    function shuffleCurrentScenario() {
+      const s = SCENARIOS[currentScenario];
+      const chars = s.word.split("");
+      const shuffled = [...chars];
+      // Fisher-Yates shuffle
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      // Ensure it is not identical to word order
+      if (shuffled.join("") === s.word) {
+        [shuffled[0], shuffled[1]] = [shuffled[1], shuffled[0]];
+      }
+      // Re-map sequence
+      const used = new Set();
+      const seq = [];
+      for (const ch of chars) {
+        for (let i = 0; i < shuffled.length; i++) {
+          if (shuffled[i] === ch && !used.has(i)) {
+            used.add(i);
+            seq.push(i);
+            break;
+          }
+        }
+      }
+      s.wheelLetters = shuffled;
+      s.sequence = seq;
+      drawInitialFrame();
+      playSfx('letterSelect', 0.9);
+    }
+
+    function setPlayMode(mode) {
+      playMode = mode;
+      document.querySelectorAll('.mode-btn').forEach(b => {
+        b.classList.remove('active');
+        b.style.background = 'var(--card-bg)';
+        b.style.borderColor = 'var(--card-border)';
+        b.style.color = 'var(--muted)';
+        b.style.boxShadow = 'none';
+      });
+      const activeBtn = document.getElementById(`mode_${mode}`);
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+        if (mode === 'fail') {
+          activeBtn.style.background = 'rgba(255, 71, 87, 0.2)';
+          activeBtn.style.borderColor = '#ff4757';
+          activeBtn.style.color = '#ff6b81';
+          activeBtn.style.boxShadow = '0 0 16px rgba(255, 71, 87, 0.3)';
+        } else {
+          activeBtn.style.background = 'rgba(46, 204, 113, 0.2)';
+          activeBtn.style.borderColor = '#2ecc71';
+          activeBtn.style.color = '#2ecc71';
+          activeBtn.style.boxShadow = '0 0 16px rgba(46, 204, 113, 0.3)';
+        }
+      }
+      updateCopyKit();
+      drawInitialFrame();
+    }
+
+    function updateCopyKit() {
+      const s = SCENARIOS[currentScenario];
+      const title1 = document.getElementById('title1');
+      const title2 = document.getElementById('title2');
+      const title3 = document.getElementById('title3');
+      const captionText = document.getElementById('captionText');
+      const hashtagText = document.getElementById('hashtagText');
+
+      if (playMode === 'fail') {
+        if (title1) title1.innerText = `Abi çıldırıcam oradaki ${s.word.length} harfliyi nasıl görmezsin ya?! 🤦‍♂️🤯`;
+        if (title2) title2.innerText = `Gerçekten "${s.failWord}" yazdı şaka gibi... Doğru kelimeyi ilk gören yoruma yazsın 👇`;
+        if (title3) title3.innerText = `99% insan tek hamlede bitirirdi, rezil oldu resmen 😂 📲 Word Battle`;
+        if (captionText) captionText.innerText = `Buradaki dev kelimeyi gören var mı? Kör gibi oynadı resmen... Doğrusunu biliyorsan yoruma yaz! 👇\n📲 Word Battle: Kelime Savaşı (App Store & Google Play)`;
+        if (hashtagText) hashtagText.innerText = `#kelimeoyunu #ragebait #fail #wordbattle #mobiloyun #türkoyun #oyunönerileri #gaming #keşfet #fyp`;
+      } else {
+        if (title1) title1.innerText = `Sadece %1 bu kelimeyi görebiliyor! Boss'u tek vuruşta deviren kelime ne? 🤯`;
+        if (title2) title2.innerText = `Kelimelerle canavar kestiğin Türk yapımı oyun yapmışlar! ⚔️🇹🇷`;
+        if (title3) title3.innerText = `Klasik kelime oyunlarından sıkılanlar için yeni favori oyun bulundu 🔥`;
+        if (captionText) captionText.innerText = `Sen olsan hangi kelimeyi yazardın? Yorumlara yaz! 👇\n📲 Oyunu Ücretsiz İndir: Word Battle: Kelime Savaşı (App Store & Google Play)`;
+        if (hashtagText) hashtagText.innerText = `#kelimeoyunu #wordbattle #mobiloyun #türkoyun #oyunönerileri #gaming #bulmaca #keşfet #fyp #shorts`;
+      }
+    }
+
+    function setScenario(sc) {
+      currentScenario = sc;
+      document.querySelectorAll('.scenario-nav .scenario-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`btn_${sc}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      updateCopyKit();
+      drawInitialFrame();
+    }
+
+    function copyText(id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text);
+      alert("Metin panoya kopyalandı!");
+    }
+
+    // INITIAL STATIC FRAME
+    function drawInitialFrame() {
+      const s = SCENARIOS[currentScenario];
+      ctx.fillStyle = "#050b14";
+      ctx.fillRect(0, 0, W, H);
+      
+      // Background Image
+      if (images.forest.complete) {
+        ctx.globalAlpha = 0.45;
+        ctx.drawImage(images.forest, 0, 0, W, H);
+        ctx.globalAlpha = 1.0;
+      }
+
+      // Gradients
+      const grad = ctx.createLinearGradient(0, 0, 0, H);
+      grad.addColorStop(0, "rgba(5, 11, 20, 0.9)");
+      grad.addColorStop(0.3, "rgba(5, 11, 20, 0.4)");
+      grad.addColorStop(0.7, "rgba(5, 11, 20, 0.7)");
+      grad.addColorStop(1, "rgba(5, 11, 20, 0.98)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      // Top Hook Bar
+      drawHook(s.hookTop, s.hookSub, 0);
+
+      // Characters
+      drawCharacters(0, 0, 0);
+
+      // HUD & HP Bars
+      drawHpBars(s.heroHp, s.bossMaxHp, s.bossMaxHp);
+
+      // Wheel (Shuffled Letters)
+      drawLetterWheel(s.wheelLetters, []);
+
+      // Center Prompt
+      ctx.fillStyle = "#f5a623";
+      ctx.font = "900 48px -apple-system, sans-serif";
+      ctx.textAlign = "center";
+      ctx.shadowColor = "#f5a623";
+      ctx.shadowBlur = 20;
+      ctx.fillText("▶ BAŞLATMAK İÇİN BUTONA BAS", W / 2, 1020);
+      ctx.shadowBlur = 0;
+    }
+
+    function drawHook(topText, subText, animTime) {
+      // Glow Box
+      const bounce = Math.sin(animTime * 10) * 4;
+      ctx.save();
+      ctx.translate(0, bounce);
+
+      ctx.fillStyle = "rgba(0, 0, 0, 0.75)";
+      ctx.strokeStyle = "#ff4757";
+      ctx.lineWidth = 6;
+      roundRect(ctx, 40, 100, W - 80, 180, 24);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#fff";
+      ctx.font = "900 44px -apple-system, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(topText, W / 2, 175);
+
+      ctx.fillStyle = "#f5a623";
+      ctx.font = "800 36px -apple-system, sans-serif";
+      ctx.fillText(subText, W / 2, 235);
+      ctx.restore();
+    }
+
+    function drawHpBars(heroHpText, currentBossHp, maxBossHp) {
+      const topY = 320;
+      // Hero HP
+      ctx.fillStyle = "#94a3b8";
+      ctx.font = "700 28px -apple-system, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("🛡️ ŞÖVALYE", 60, topY);
+      
+      ctx.fillStyle = "rgba(0,0,0,0.6)";
+      roundRect(ctx, 60, topY + 12, 420, 26, 13);
+      ctx.fill();
+      ctx.fillStyle = "#2ecc71";
+      roundRect(ctx, 62, topY + 14, 400, 22, 11);
+      ctx.fill();
+
+      // Boss HP
+      ctx.fillStyle = "#ff4757";
+      ctx.font = "700 28px -apple-system, sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillText("💀 BOSS", W - 60, topY);
+
+      ctx.fillStyle = "rgba(0,0,0,0.6)";
+      roundRect(ctx, W - 480, topY + 12, 420, 26, 13);
+      ctx.fill();
+      const bossFill = Math.max(0, (currentBossHp / maxBossHp) * 416);
+      ctx.fillStyle = "#ff4757";
+      roundRect(ctx, W - 480 + (416 - bossFill) + 2, topY + 14, bossFill, 22, 11);
+      ctx.fill();
+    }
+
+    function drawCharacters(heroOffset, bossOffset, hitEffect) {
+      const charY = 480;
+      const s = SCENARIOS[currentScenario];
+      
+      // Hero
+      const heroImg = currentScenario === 'efsane' ? images.mage : images.knight;
+      if (heroImg && heroImg.complete) {
+        ctx.save();
+        ctx.translate(60 + heroOffset, charY);
+        ctx.drawImage(heroImg, 0, 0, 420, 420);
+        ctx.restore();
+      }
+
+      // Boss
+      const bossImg = currentScenario === 'halloween' ? images.orc : images.orc;
+      if (bossImg && bossImg.complete) {
+        ctx.save();
+        ctx.translate(W - 480 + bossOffset, charY);
+        if (hitEffect > 0) {
+          ctx.filter = `brightness(2) drop-shadow(0 0 25px #ff4757)`;
+        }
+        ctx.drawImage(bossImg, 0, 0, 420, 420);
+        ctx.restore();
+      }
+    }
+
+    function drawLetterWheel(letters, connectedIndices, fingerPos = null) {
+      const centerX = W / 2;
+      const centerY = 1450;
+      const radius = 280;
+
+      // Outer Rune Wheel Ring
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius + 55, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(18, 28, 45, 0.85)";
+      ctx.fill();
+      ctx.lineWidth = 8;
+      ctx.strokeStyle = "rgba(0, 210, 255, 0.4)";
+      ctx.stroke();
+
+      // Connecting Lines
+      if (connectedIndices.length > 1) {
+        ctx.beginPath();
+        for (let i = 0; i < connectedIndices.length; i++) {
+          const idx = connectedIndices[i];
+          const angle = (idx / letters.length) * Math.PI * 2 - Math.PI / 2;
+          const lx = centerX + Math.cos(angle) * radius;
+          const ly = centerY + Math.sin(angle) * radius;
+          if (i === 0) ctx.moveTo(lx, ly);
+          else ctx.lineTo(lx, ly);
+        }
+        if (fingerPos) {
+          ctx.lineTo(fingerPos.x, fingerPos.y);
+        }
+        ctx.lineWidth = 14;
+        ctx.strokeStyle = "#00d2ff";
+        ctx.shadowColor = "#00d2ff";
+        ctx.shadowBlur = 30;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+
+      // Letter Nodes
+      for (let i = 0; i < letters.length; i++) {
+        const angle = (i / letters.length) * Math.PI * 2 - Math.PI / 2;
+        const lx = centerX + Math.cos(angle) * radius;
+        const ly = centerY + Math.sin(angle) * radius;
+        const isSelected = connectedIndices.includes(i);
+
+        // Circle
+        ctx.beginPath();
+        ctx.arc(lx, ly, 58, 0, Math.PI * 2);
+        ctx.fillStyle = isSelected ? "#00d2ff" : "#1a273a";
+        ctx.fill();
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = isSelected ? "#fff" : "rgba(255, 255, 255, 0.3)";
+        ctx.stroke();
+
+        // Letter Text
+        ctx.fillStyle = isSelected ? "#090e17" : "#fff";
+        ctx.font = "900 52px -apple-system, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(letters[i], lx, ly);
+      }
+
+      // Center Selected Word Preview
+      if (connectedIndices.length > 0) {
+        const formedWord = connectedIndices.map(i => letters[i]).join("");
+        ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
+        ctx.strokeStyle = "#f5a623";
+        ctx.lineWidth = 5;
+        roundRect(ctx, centerX - 260, centerY - 60, 520, 120, 20);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = "#f5a623";
+        ctx.font = "900 56px -apple-system, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.shadowColor = "#f5a623";
+        ctx.shadowBlur = 20;
+        ctx.fillText(formedWord, centerX, centerY);
+        ctx.shadowBlur = 0;
+      }
+
+      // Animated Finger
+      if (fingerPos) {
+        ctx.beginPath();
+        ctx.arc(fingerPos.x, fingerPos.y, 28, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+        ctx.shadowColor = "#00d2ff";
+        ctx.shadowBlur = 25;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+      ctx.restore();
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+
+    // MAIN ANIMATION TIMELINE
+    async function startGeneration(recordVideo = true) {
+      if (isRunning) return;
+      isRunning = true;
+      isRecording = recordVideo;
+
+      await initAudio();
+
+      const recordBtn = document.getElementById('recordBtn');
+      const previewBtn = document.getElementById('previewBtn');
+      const statusText = document.getElementById('statusText');
+      const liveDot = document.getElementById('liveDot');
+      const successBox = document.getElementById('successBox');
+
+      recordBtn.disabled = true;
+      previewBtn.disabled = true;
+      successBox.style.display = 'none';
+      liveDot.style.display = 'inline-block';
+
+      if (isRecording) {
+        recordedChunks = [];
+        const canvasStream = canvas.captureStream(60);
+        const combinedStream = new MediaStream();
+        canvasStream.getVideoTracks().forEach(t => combinedStream.addTrack(t));
+        if (audioDest) {
+          audioDest.stream.getAudioTracks().forEach(t => combinedStream.addTrack(t));
+        }
+
+        let mimeType = 'video/webm;codecs=vp9,opus';
+        if (!MediaRecorder.isTypeSupported(mimeType)) {
+          mimeType = 'video/webm';
+          if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/mp4';
+        }
+
+        mediaRecorder = new MediaRecorder(combinedStream, {
+          mimeType: mimeType,
+          videoBitsPerSecond: 10000000 // 10 Mbps Ultra Quality
+        });
+
+        mediaRecorder.ondataavailable = e => {
+          if (e.data.size > 0) recordedChunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(recordedChunks, { type: mimeType });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
+          a.download = `word-battle-tiktok-short-${currentScenario}.${ext}`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+
+          successBox.style.display = 'block';
+          statusText.innerText = "✓ Video indirildi!";
+          liveDot.style.display = 'none';
+          recordBtn.disabled = false;
+          previewBtn.disabled = false;
+          isRunning = false;
+        };
+
+        mediaRecorder.start();
+      }
+
+      // START TIMELINE: 18 Seconds Total
+      const s = SCENARIOS[currentScenario];
+      const startTime = performance.now();
+      const totalDuration = 18000; // 18 seconds
+
+      // Audio cue flags
+      let playedLetters = new Set();
+      let playedValid = false;
+      let playedAttack = false;
+      let playedHit = false;
+      let playedBossAttack = false;
+      let playedDefeat = false;
+      let playedVictory = false;
+
+      function renderFrame(now) {
+        const elapsed = now - startTime;
+        const t = elapsed / 1000; // seconds
+
+        statusText.innerText = `Kayıt yapılıyor: 00:${Math.floor(t).toString().padStart(2, '0')} / 00:18`;
+
+        // 1. CLEAR & BACKGROUND
+        ctx.fillStyle = "#050b14";
+        ctx.fillRect(0, 0, W, H);
+        if (images.forest.complete) {
+          ctx.globalAlpha = 0.45;
+          ctx.drawImage(images.forest, 0, 0, W, H);
+          ctx.globalAlpha = 1.0;
+        }
+
+        // Screen Shake during impacts
+        let shakeX = 0, shakeY = 0;
+        if (playMode === 'fail') {
+          if (t >= 11.5 && t <= 13.0) {
+            shakeX = (Math.random() - 0.5) * 45;
+            shakeY = (Math.random() - 0.5) * 45;
+          }
+        } else {
+          if (t >= 11.5 && t <= 13.0) {
+            shakeX = (Math.random() - 0.5) * 35;
+            shakeY = (Math.random() - 0.5) * 35;
+          }
+        }
+        ctx.save();
+        ctx.translate(shakeX, shakeY);
+
+        // 2. TOP HOOK
+        drawHook(s.hookTop, s.hookSub, t);
+
+        // 3. CHARACTERS & ATTACK ANIMATION
+        let heroOffset = 0;
+        let bossOffset = 0;
+        let hitEffect = 0;
+        let bossHp = s.bossMaxHp;
+        let heroHp = s.heroHp;
+
+        if (playMode === 'fail') {
+          // --- FAIL / RAGE-BAIT FLOW ---
+          if (t >= 9.8 && t < 10.3) {
+            heroOffset = (t - 9.8) * 300;
+          } else if (t >= 10.3 && t < 11.4) {
+            heroOffset = 100;
+            bossHp = s.bossMaxHp - s.failDamage;
+            hitEffect = 1;
+            if (!playedAttack) {
+              playedAttack = true;
+              playSfx('heroAttack', 0.8);
+            }
+            if (!playedHit && t >= 10.4) {
+              playedHit = true;
+              playSfx('enemyHit', 0.8);
+            }
+          } else if (t >= 11.4 && t < 12.0) {
+            bossOffset = - (t - 11.4) * 600;
+            bossHp = s.bossMaxHp - s.failDamage;
+          } else if (t >= 12.0) {
+            bossOffset = -300;
+            heroOffset = -180;
+            heroHp = "0 / 300";
+            bossHp = s.bossMaxHp - s.failDamage;
+
+            if (!playedBossAttack) {
+              playedBossAttack = true;
+              playSfx('enemyAttack', 1.0);
+            }
+            if (!playedDefeat && t >= 12.3) {
+              playedDefeat = true;
+              playSfx('defeat', 1.0);
+            }
+          }
+        } else {
+          // --- PRO WIN FLOW ---
+          if (t >= 11.0 && t < 11.5) {
+            heroOffset = (t - 11.0) * 600;
+          } else if (t >= 11.5 && t < 13.0) {
+            heroOffset = 250;
+            bossOffset = 40 + Math.sin(t * 50) * 20;
+            hitEffect = 1;
+            bossHp = Math.max(0, s.bossMaxHp - (t - 11.5) * 350);
+
+            if (!playedAttack) {
+              playedAttack = true;
+              playSfx('heroAttack', 1.0);
+            }
+            if (!playedHit && t >= 11.7) {
+              playedHit = true;
+              playSfx('enemyHit', 1.0);
+            }
+          } else if (t >= 13.0) {
+            bossHp = 0;
+            bossOffset = 150 + (t - 13.0) * 50;
+          }
+        }
+
+        drawHpBars(heroHp, bossHp, s.bossMaxHp);
+        drawCharacters(heroOffset, bossOffset, hitEffect);
+
+        // 4. DAMAGE POPUP / NOTIFICATIONS
+        if (playMode === 'fail') {
+          if (t >= 10.3 && t < 11.4) {
+            ctx.save();
+            ctx.translate(W - 270, 380);
+            ctx.fillStyle = "#ff6b81";
+            ctx.font = "900 52px -apple-system, sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(s.failCritText, 0, 0);
+            ctx.restore();
+          } else if (t >= 11.0 && t < 12.0) {
+            ctx.save();
+            ctx.translate(W - 270, 360);
+            ctx.fillStyle = "#ff4757";
+            ctx.font = "900 48px -apple-system, sans-serif";
+            ctx.textAlign = "center";
+            ctx.shadowColor = "#ff4757";
+            ctx.shadowBlur = 20;
+            ctx.fillText("💀 BOSS ÖFKELENDİ! 🔥", 0, 0);
+            ctx.restore();
+          } else if (t >= 12.0 && t < 14.5) {
+            ctx.save();
+            ctx.translate(220, 380);
+            ctx.fillStyle = "#ff4757";
+            ctx.font = "900 58px -apple-system, sans-serif";
+            ctx.textAlign = "center";
+            ctx.shadowColor = "#ff4757";
+            ctx.shadowBlur = 25;
+            ctx.fillText("💥 -300 HASAR! 💀", 0, 0);
+            ctx.restore();
+          }
+        } else {
+          if (t >= 11.7 && t <= 14.0) {
+            ctx.save();
+            const popScale = Math.min(1.4, 1.0 + (t - 11.7) * 1.5);
+            ctx.translate(W - 270, 420 - (t - 11.7) * 60);
+            ctx.scale(popScale, popScale);
+            ctx.fillStyle = "#ff4757";
+            ctx.font = "900 68px -apple-system, sans-serif";
+            ctx.textAlign = "center";
+            ctx.shadowColor = "#ff4757";
+            ctx.shadowBlur = 30;
+            ctx.fillText(s.critText, 0, 0);
+            ctx.restore();
+          }
+        }
+
+        // 5. LETTER WHEEL & FINGER CONNECTING (t: 4.0 - 9.5)
+        const activeSeq = playMode === 'fail' ? s.failSequence : s.sequence;
+        let connectedIndices = [];
+        let fingerPos = null;
+
+        if (t >= 4.0 && t < 9.5) {
+          const connectDuration = 4.8;
+          const p = Math.min(0.999, (t - 4.0) / connectDuration);
+          const totalSteps = activeSeq.length;
+          const currentFloat = p * (totalSteps - 1);
+          const currentStep = Math.floor(currentFloat);
+          const stepFrac = currentFloat - currentStep;
+
+          for (let i = 0; i <= currentStep; i++) {
+            const nodeIdx = activeSeq[i];
+            connectedIndices.push(nodeIdx);
+            if (!playedLetters.has(nodeIdx)) {
+              playedLetters.add(nodeIdx);
+              playSfx('letterSelect', 0.8);
+            }
+          }
+
+          const fromNode = getNodeCoord(activeSeq[currentStep], s.wheelLetters.length);
+          const nextIdx = Math.min(totalSteps - 1, currentStep + 1);
+          const toNode = getNodeCoord(activeSeq[nextIdx], s.wheelLetters.length);
+          const smoothFrac = 0.5 - 0.5 * Math.cos(stepFrac * Math.PI);
+
+          fingerPos = {
+            x: fromNode.x + (toNode.x - fromNode.x) * smoothFrac,
+            y: fromNode.y + (toNode.y - fromNode.y) * smoothFrac
+          };
+        } else if (t >= 9.5 && t < 10.5) {
+          connectedIndices = [...activeSeq];
+          fingerPos = getNodeCoord(activeSeq[activeSeq.length - 1], s.wheelLetters.length);
+          if (!playedValid) {
+            playedValid = true;
+            playSfx('wordValid', 1.0);
+          }
+        }
+
+        if (t < 14.0) {
+          drawLetterWheel(s.wheelLetters, connectedIndices, fingerPos);
+        }
+
+        // 6. VICTORY OR DEFEAT OVERLAY (t: 12.3 - 14.8)
+        if (playMode === 'fail') {
+          if (t >= 12.3 && t < 14.8) {
+            ctx.save();
+            ctx.fillStyle = "rgba(10, 0, 0, 0.75)";
+            ctx.fillRect(0, 0, W, H);
+
+            ctx.fillStyle = "#ff4757";
+            ctx.font = "900 84px -apple-system, sans-serif";
+            ctx.textAlign = "center";
+            ctx.shadowColor = "#ff4757";
+            ctx.shadowBlur = 40;
+            ctx.fillText("❌ YENİLGİ!", W / 2, H / 2 - 80);
+
+            ctx.fillStyle = "#fff";
+            ctx.font = "800 48px -apple-system, sans-serif";
+            ctx.fillText("CANIN TÜKENDİ! 💀", W / 2, H / 2);
+
+            ctx.fillStyle = "#f5a623";
+            ctx.font = "700 36px -apple-system, sans-serif";
+            ctx.fillText('"HAYIR YA! YİNE Mİ KAYBETTİM?!" 🤦‍♂️', W / 2, H / 2 + 70);
+            ctx.restore();
+          }
+        } else {
+          if (t >= 13.0 && t < 15.5) {
+            if (!playedVictory) {
+              playedVictory = true;
+              playSfx('victory', 1.0);
+            }
+            ctx.save();
+            ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+            ctx.fillRect(0, 0, W, H);
+
+            ctx.fillStyle = "#f5a623";
+            ctx.font = "900 84px -apple-system, sans-serif";
+            ctx.textAlign = "center";
+            ctx.shadowColor = "#f5a623";
+            ctx.shadowBlur = 40;
+            ctx.fillText("🏆 ZAFER!", W / 2, H / 2 - 80);
+
+            ctx.fillStyle = "#2ecc71";
+            ctx.font = "800 52px -apple-system, sans-serif";
+            ctx.fillText("+100 ELMAS KAZANILDI! 💎", W / 2, H / 2);
+            ctx.restore();
+          }
+        }
+
+        // 7. OUTRO & RAGE-BAIT CTA (t: 14.5 - 18.0)
+        if (t >= 14.5) {
+          ctx.save();
+          ctx.fillStyle = "rgba(9, 14, 23, 0.95)";
+          ctx.fillRect(0, 0, W, H);
+
+          if (playMode === 'fail') {
+            // RAGE-BAIT CALL TO ACTION
+            ctx.fillStyle = "#ff4757";
+            ctx.font = "900 52px -apple-system, sans-serif";
+            ctx.textAlign = "center";
+            ctx.shadowColor = "#ff4757";
+            ctx.shadowBlur = 30;
+            ctx.fillText("🤯 " + s.failRageHook, W / 2, 280);
+
+            ctx.fillStyle = "#f5a623";
+            ctx.font = "800 38px -apple-system, sans-serif";
+            ctx.fillText(s.failRageSub, W / 2, 350);
+            ctx.shadowBlur = 0;
+
+            // Highlighted letter wheel in center (raised slightly for clean spacing)
+            ctx.save();
+            ctx.translate(0, -640);
+            drawLetterWheel(s.wheelLetters, []);
+            ctx.restore();
+
+            // Provocative prompt (positioned lower down as requested)
+            ctx.fillStyle = "#fff";
+            ctx.font = "900 46px -apple-system, sans-serif";
+            ctx.fillText("SEN OLSAN HANGİ KELİMEYİ YAZARDIN?", W / 2, 1260);
+
+            ctx.fillStyle = "#00d2ff";
+            ctx.font = "700 34px -apple-system, sans-serif";
+            ctx.fillText("Doğru cevabı yoruma yaz! 👇", W / 2, 1320);
+
+            // Big Download CTA button
+            ctx.fillStyle = "#2ecc71";
+            roundRect(ctx, W / 2 - 340, 1390, 680, 120, 60);
+            ctx.fill();
+
+            ctx.fillStyle = "#fff";
+            ctx.font = "900 42px -apple-system, sans-serif";
+            ctx.fillText("📲 ŞİMDİ İNDİR VE KANITLA", W / 2, 1465);
+
+            ctx.fillStyle = "#f5a623";
+            ctx.font = "700 30px -apple-system, sans-serif";
+            ctx.fillText("App Store & Google Play • Ücretsiz", W / 2, 1555);
+
+            // Bouncing Arrow
+            const arrowBounce = Math.sin(t * 12) * 16;
+            ctx.font = "52px -apple-system, sans-serif";
+            ctx.fillText("⬇️", W / 2, 1630 + arrowBounce);
+
+          } else {
+            // PRO WIN OUTRO
+            if (images.icon.complete) {
+              ctx.drawImage(images.icon, W / 2 - 140, 480, 280, 280);
+            }
+
+            ctx.fillStyle = "#fff";
+            ctx.font = "900 58px -apple-system, sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("WORD BATTLE", W / 2, 850);
+
+            ctx.fillStyle = "#00d2ff";
+            ctx.font = "800 40px -apple-system, sans-serif";
+            ctx.fillText("KELİME SAVAŞI", W / 2, 920);
+
+            ctx.fillStyle = "#94a3b8";
+            ctx.font = "600 32px -apple-system, sans-serif";
+            ctx.fillText("Kelimelerinle Krallığı Kurtar!", W / 2, 990);
+
+            ctx.fillStyle = "#2ecc71";
+            roundRect(ctx, W / 2 - 320, 1100, 640, 130, 65);
+            ctx.fill();
+
+            ctx.fillStyle = "#fff";
+            ctx.font = "900 44px -apple-system, sans-serif";
+            ctx.fillText("📲 ŞİMDİ ÜCRETSİZ İNDİR", W / 2, 1180);
+
+            ctx.fillStyle = "#f5a623";
+            ctx.font = "700 32px -apple-system, sans-serif";
+            ctx.fillText("App Store & Google Play", W / 2, 1280);
+
+            const arrowBounce = Math.sin(t * 12) * 20;
+            ctx.font = "60px -apple-system, sans-serif";
+            ctx.fillText("⬇️", W / 2, 1370 + arrowBounce);
+          }
+
+          ctx.restore();
+        }
+
+        ctx.restore(); // restore shake
+
+        if (elapsed < totalDuration) {
+          requestAnimationFrame(renderFrame);
+        } else {
+          if (isRecording && mediaRecorder && mediaRecorder.state === 'recording') {
+            mediaRecorder.stop();
+          } else {
+            statusText.innerText = "✓ Önizleme tamamlandı";
+            liveDot.style.display = 'none';
+            recordBtn.disabled = false;
+            previewBtn.disabled = false;
+            isRunning = false;
+          }
+        }
+      }
+
+      requestAnimationFrame(renderFrame);
+    }
+
+    // Initialize on load
+    window.addEventListener('load', () => {
+      updateCopyKit();
+      drawInitialFrame();
+    });
+  </script>
+</body>
+</html>
