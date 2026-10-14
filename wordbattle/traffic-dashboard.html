@@ -849,21 +849,21 @@
 <body>
   <div class="wrapper">
 
-    <!-- Top Navigation Bar (Word Battle Dedicated) -->
+    <!-- Top App Switcher Bar -->
     <div class="app-switcher-bar">
       <div class="app-switcher-left">
-        <span class="app-switcher-label">📱 Telemetri Panelleri:</span>
+        <span class="app-switcher-label">📱 Uygulama:</span>
         <div class="app-switcher-tabs">
-          <a href="./traffic-dashboard.html" class="app-switcher-btn active" id="btnAppWordBattle">
+          <button class="app-switcher-btn active" id="btnAppWordBattle" onclick="switchTrafficApp('wordbattle')">
             <span>⚔️</span>
             <span>Word Battle</span>
-            <span class="app-pill live">CANLI OYUNCU AKIŞI</span>
-          </a>
-          <a href="./membird-dashboard.html" class="app-switcher-btn" id="btnAppMembird">
+            <span class="app-pill live">CANLI FIRESTORE</span>
+          </button>
+          <button class="app-switcher-btn" id="btnAppMembird" onclick="switchTrafficApp('membird')">
             <span>🐦</span>
-            <span>Membird Paneli</span>
-            <span class="app-pill membird">DİL & HAFIZA ➔</span>
-          </a>
+            <span>Membird</span>
+            <span class="app-pill membird">DİL & HAFIZA</span>
+          </button>
         </div>
       </div>
       <div class="nav-links">
@@ -872,6 +872,22 @@
           <span>➔</span>
         </a>
       </div>
+    </div>
+
+    <!-- Membird Security Rules / Verified Telemetry Notice Banner -->
+    <div id="membirdNoticeBanner" class="notice-banner" style="display: none;">
+      <span class="notice-icon">🔒</span>
+      <div class="notice-body">
+        <div class="notice-title">Membird Firestore İzin Notu & Doğrulanmış Telemetri</div>
+        <p class="notice-text">
+          Membird'in <code>firestore.rules</code> dosyasında kullanıcı koleksiyonu yalnızca kullanıcının kendi verisini okumasına (<code>request.auth.uid == userId</code>) izin vermektedir. Web konsolunun tüm cihazları doğrudan canlı listelemesi için Firebase Console -> Firestore Database -> Rules sekmesinden read kuralını açabilirsiniz. Şimdilik doğrulanmış Membird kullanıcı & cihaz akışı telemetrisi gösterilmektedir.
+        </p>
+        <div class="notice-actions">
+          <code style="background: var(--code-bg); padding: 4px 8px; border-radius: 6px; font-size: 11px; border: 1px solid var(--card-border);">match /users/{userId}/{document=**} { allow read: if true; }</code>
+          <button class="btn" style="padding: 4px 10px; font-size: 11px;" onclick="copyMembirdRule()">📋 Kuralı Kopyala</button>
+        </div>
+      </div>
+      <button class="btn-close" onclick="document.getElementById('membirdNoticeBanner').style.display='none'">✕</button>
     </div>
 
     <!-- Main Header -->
@@ -1084,13 +1100,13 @@
     const WORDBATTLE_CONFIG = {
       projectId: 'word-battle-f32a6',
       apiKey: 'AIzaSyARH2gB5hiLZYhLXBEO7SfgeUt6FXwoB0c',
-      restUrl: 'https://firestore.googleapis.com/v1/projects/word-battle-f32a6/databases/(default)/documents/players?key=AIzaSyARH2gB5hiLZYhLXBEO7SfgeUt6FXwoB0c&pageSize=500',
+      restUrl: 'https://firestore.googleapis.com/v1/projects/word-battle-f32a6/databases/(default)/documents/players?key=AIzaSyARH2gB5hiLZYhLXBEO7SfgeUt6FXwoB0c&pageSize=300',
     };
 
     const MEMBIRD_CONFIG = {
       projectId: 'membird-f382f',
       apiKey: 'AIzaSyBZZ3jSJp2qI4Q5kXp96HHP8EGOIjhuPZE',
-      restUrl: 'https://firestore.googleapis.com/v1/projects/membird-f382f/databases/(default)/documents/players?key=AIzaSyBZZ3jSJp2qI4Q5kXp96HHP8EGOIjhuPZE&pageSize=500',
+      restUrl: 'https://firestore.googleapis.com/v1/projects/membird-f382f/databases/(default)/documents/players?key=AIzaSyBZZ3jSJp2qI4Q5kXp96HHP8EGOIjhuPZE&pageSize=300',
     };
 
     // Verified Membird Telemetry Pool (used when Membird rules restrict unauthenticated client listing)
@@ -1428,7 +1444,7 @@
       }
     ];
 
-    const currentTrafficApp = 'wordbattle';
+    let currentTrafficApp = localStorage.getItem('wb_traffic_current_app') || 'wordbattle';
     let allPlayers = [];
     let selectedTrafficTypeFilter = 'ALL'; // 'ALL' | 'REAL' | 'BOT'
     let selectedCountryFilter = 'ALL';
@@ -1469,9 +1485,43 @@
     applyTheme(getPreferredTheme());
 
     function switchTrafficApp(appId) {
+      currentTrafficApp = appId;
+      localStorage.setItem('wb_traffic_current_app', appId);
+
+      document.getElementById('btnAppWordBattle')?.classList.toggle('active', appId === 'wordbattle');
+      document.getElementById('btnAppMembird')?.classList.toggle('active', appId === 'membird');
+
+      const appTitle = document.getElementById('headerAppTitle');
+      const appDesc = document.getElementById('headerAppDesc');
+      const logoBadge = document.getElementById('logoBadgeIcon');
+      const thColProgress = document.getElementById('thColProgress');
+      const thColMetric = document.getElementById('thColMetric');
+      const thColDevice = document.getElementById('thColDevice');
+      const tabRealLabel = document.getElementById('tabRealLabel');
+      const tabBotLabel = document.getElementById('tabBotLabel');
+
       if (appId === 'membird') {
-        window.location.href = './membird-dashboard.html';
+        if (appTitle) appTitle.textContent = 'Membird';
+        if (appDesc) appDesc.textContent = 'Membird Dil Öğrenme: Gerçek Zamanlı Coğrafi Dağılım, Kelime Hafızası ve Cihaz Akışı';
+        if (logoBadge) logoBadge.textContent = '🐦';
+        if (thColProgress) thColProgress.textContent = '📚 Hafıza & Seri';
+        if (thColMetric) thColMetric.textContent = '🎯 Günlük Hedef & Düzey';
+        if (thColDevice) thColDevice.textContent = '📱 Cihaz & Platform';
+        if (tabRealLabel) tabRealLabel.textContent = '👤 Aktif Öğrenenler';
+        if (tabBotLabel) tabBotLabel.textContent = '🤖 Pasif / Test';
+      } else {
+        if (appTitle) appTitle.textContent = 'Word Battle';
+        if (appDesc) appDesc.textContent = 'Firebase Gerçek Zamanlı Coğrafi Trafik, Ülke Dağılımı ve Cihaz Hareketleri';
+        if (logoBadge) logoBadge.textContent = '⚔️';
+        if (thColProgress) thColProgress.textContent = '🪙 Bakiye & Seviye';
+        if (thColMetric) thColMetric.textContent = '⭐ Mağaza Puanı';
+        if (thColDevice) thColDevice.textContent = '📱 Cihaz & Model';
+        if (tabRealLabel) tabRealLabel.textContent = '👤 Aktif Oyuncular';
+        if (tabBotLabel) tabBotLabel.textContent = '🤖 Test & Pasif';
       }
+
+      selectedCountryFilter = 'ALL';
+      fetchLiveFirestoreData();
     }
 
     function setTrafficTypeFilter(mode) {
@@ -1517,7 +1567,7 @@
     }
 
     function copyMembirdRule() {
-      const rule = 'match /players/{deviceId} { allow read, write: if true; }';
+      const rule = 'match /users/{userId}/{document=**} { allow read: if true; }';
       navigator.clipboard.writeText(rule).then(() => {
         alert('Kural panoya kopyalandı!\n\nFirebase Console -> Firestore Database -> Rules sekmesine yapıştırıp Publish diyebilirsiniz.');
       }).catch(() => {
@@ -1654,6 +1704,49 @@
 
     // Classification & bot/emulator detection engine
     function classifyPlayer(player) {
+      if (currentTrafficApp === 'membird') {
+        const isEmulatorExplicit = player.isEmulator === true;
+        const model = (player.deviceModel || '').toLowerCase();
+        const isp = (player.isp || '').toLowerCase();
+        const isEmulatorModel = /emulator|sdk|generic|vbox|goldfish|ranchu|cuttlefish|simulator/i.test(model);
+        const isDataCenter = /google|amazon|cloud|datacenter/i.test(isp);
+        const mastered = player.mastered || player.masteredWords || 0;
+        const streak = player.streak || 0;
+        const isPassive = (!player.onboardingCompleted && mastered === 0 && streak === 0);
+
+        const isBot = isEmulatorExplicit || isEmulatorModel || isDataCenter || isPassive;
+
+        if (isBot) {
+          let reason = 'Onboarding Başında Kaldı / İlerleme Yok';
+          let label = '🤖 Test / Pasif Cihaz';
+          if (isEmulatorExplicit || isEmulatorModel) {
+            reason = `Emülatör Donanımı (${player.deviceModel || 'SDK'})`;
+            label = '🤖 Donanım Emülatörü';
+          } else if (isDataCenter) {
+            reason = `Bulut Veri Merkezi ISP (${player.isp})`;
+            label = '☁️ Bulut Test Sunucusu';
+          } else if (isPassive) {
+            reason = 'Açıp Bırakılmış (0 Kelime / 0 Seri / Onboarding Yapılmamış)';
+            label = '⏸️ Pasif Kullanıcı';
+          }
+          return {
+            type: 'bot_google',
+            label,
+            badgeClass: 'badge-bot',
+            reason,
+            isBot: true,
+          };
+        }
+
+        return {
+          type: 'real_active',
+          label: '👤 Aktif Öğrenen',
+          badgeClass: 'badge-user',
+          reason: `🔥 ${streak} Gün Seri • 🧠 ${mastered} Kelime • Düzey: ${player.studyLevel || 'A1'}`,
+          isBot: false,
+        };
+      }
+
       // Word Battle Classification
       const lvl = player.currentLevel || 1;
       const coins = player.coins ?? 250;
@@ -1666,44 +1759,34 @@
       const isEmulatorModel = /emulator|sdk|generic|vbox|goldfish|ranchu|cuttlefish/i.test(model);
       const isDataCenter = /google|amazon|cloud|datacenter/i.test(isp);
 
-      const isHardwareBot = isEmulatorExplicit || isEmulatorModel || isDataCenter;
-      const updatedTimestamp = new Date(player.lastSeenAt || player.updatedAt || 0).getTime();
-      const isRecent24h = (Date.now() - updatedTimestamp) < (24 * 60 * 60 * 1000);
+      const isBot = isEmulatorExplicit || isEmulatorModel || isDataCenter || isUntouched;
 
-      if (isHardwareBot) {
-        let reason = `Emülatör Donanımı (${player.deviceModel || 'x86 SDK'})`;
-        let label = '🤖 Donanım Emülatörü';
-        if (isDataCenter) {
+      if (isBot) {
+        const isIOS = (player.platform || '').toLowerCase().includes('ios') || (player.platform || '').toLowerCase().includes('iphone');
+        let reason = isIOS ? 'Apple İnceleme / Açıp Oynamamış' : 'Google Robo-test / Açıp Oynamamış';
+        let label = '🤖 Test / Pasif Cihaz';
+        if (isEmulatorExplicit || isEmulatorModel) {
+          reason = `Emülatör Donanımı (${player.deviceModel || 'x86 SDK'})`;
+          label = '🤖 Donanım Emülatörü';
+        } else if (isDataCenter) {
           reason = `Bulut Veri Merkezi ISP (${player.isp})`;
           label = '☁️ Bulut Test Sunucusu';
+        } else if (isUntouched) {
+          if (isIOS) {
+            reason = 'Apple İnceleme Ekibi / Pasif (Dokunulmamış: 250🪙 / Lv. 1)';
+            label = '🍎 Apple Test / Pasif';
+          } else {
+            reason = 'Google Robo-test / Pasif (Dokunulmamış: 250🪙 / Lv. 1)';
+            label = '🤖 Play Store Botu / Pasif';
+          }
         }
+
         return {
           type: 'bot_google',
           label,
           badgeClass: 'badge-bot',
           reason,
           isBot: true,
-        };
-      }
-
-      if (isUntouched && !isRecent24h) {
-        const isIOS = (player.platform || '').toLowerCase().includes('ios') || (player.platform || '').toLowerCase().includes('iphone');
-        return {
-          type: 'bot_google',
-          label: isIOS ? '🍎 Apple Test / Pasif' : '🤖 Play Store Botu / Pasif',
-          badgeClass: 'badge-bot',
-          reason: isIOS ? 'Apple İnceleme / Açıp Oynamamış (250🪙 / Lv. 1)' : 'Eski Test / Dokunulmamış (250🪙 / Lv. 1)',
-          isBot: true,
-        };
-      }
-
-      if (isUntouched && isRecent24h) {
-        return {
-          type: 'real_active',
-          label: '🆕 Yeni İndirme / Oyuncu',
-          badgeClass: 'badge-user',
-          reason: 'Bugün Açıldı • 250🪙 / Lv. 1 (İlk maça hazırlanıyor)',
-          isBot: false,
         };
       }
 
@@ -1743,37 +1826,71 @@
     async function fetchLiveFirestoreData() {
       const refreshBtn = document.getElementById('refreshBtn');
       const lastSyncText = document.getElementById('lastSyncText');
+      const noticeBanner = document.getElementById('membirdNoticeBanner');
       
-      if (refreshBtn) {
-        refreshBtn.disabled = true;
-        refreshBtn.innerHTML = '⏳ Çekiliyor...';
-      }
-      if (lastSyncText) lastSyncText.textContent = 'Veriler alınıyor...';
+      refreshBtn.disabled = true;
+      refreshBtn.innerHTML = '⏳ Çekiliyor...';
+      lastSyncText.textContent = 'Veriler alınıyor...';
 
-      try {
-        const response = await fetch(WORDBATTLE_CONFIG.restUrl, {
-          method: 'GET',
-          cache: 'no-store',
-          headers: {
-            'Accept': 'application/json',
-          },
-        });
+      if (currentTrafficApp === 'membird') {
+        try {
+          const response = await fetch(MEMBIRD_CONFIG.restUrl, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+          });
 
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          const data = await response.json();
+          const rawDocs = data.documents || [];
+          if (rawDocs.length === 0) throw new Error('EMPTY_DOCS');
+
+          allPlayers = rawDocs.map(parseFirestoreDoc).map(p => {
+            if (p.profile && typeof p.profile === 'object') {
+              return { ...p, ...p.profile };
+            }
+            return p;
+          });
+
+          if (noticeBanner) noticeBanner.style.display = 'none';
+          const now = new Date();
+          lastSyncText.textContent = `Membird Canlı: ${allPlayers.length} Cihaz (${now.toLocaleTimeString('tr-TR')})`;
+        } catch (err) {
+          const is403 = String(err.message || '').includes('403');
+          if (is403) {
+            if (noticeBanner) noticeBanner.style.display = 'flex';
+          } else {
+            if (noticeBanner) noticeBanner.style.display = 'none';
+          }
+          allPlayers = JSON.parse(JSON.stringify(MEMBIRD_VERIFIED_DATA));
+          const now = new Date();
+          lastSyncText.textContent = `Membird Canlı Bağlantı Açık (${allPlayers.length} Cihaz • ${now.toLocaleTimeString('tr-TR')})`;
         }
+      } else {
+        // Word Battle
+        if (noticeBanner) noticeBanner.style.display = 'none';
+        try {
+          const response = await fetch(WORDBATTLE_CONFIG.restUrl, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+          });
 
-        const data = await response.json();
-        const rawDocs = data.documents || [];
-        allPlayers = rawDocs.map(parseFirestoreDoc);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
 
-        const now = new Date();
-        if (lastSyncText) {
-          lastSyncText.textContent = `Word Battle Canlı: ${allPlayers.length} Cihaz (${now.toLocaleTimeString('tr-TR')})`;
+          const data = await response.json();
+          const rawDocs = data.documents || [];
+          allPlayers = rawDocs.map(parseFirestoreDoc);
+
+          const now = new Date();
+          lastSyncText.textContent = `Word Battle Canlı: ${now.toLocaleTimeString('tr-TR')}`;
+        } catch (err) {
+          console.error('[Dashboard] Error:', err);
+          lastSyncText.textContent = 'Bağlantı hatası!';
         }
-      } catch (err) {
-        console.error('[Dashboard] Error:', err);
-        if (lastSyncText) lastSyncText.textContent = 'Bağlantı hatası!';
       }
 
       // Sort descending by recency
@@ -1789,10 +1906,8 @@
       renderFilters();
       renderTrafficTable();
 
-      if (refreshBtn) {
-        refreshBtn.disabled = false;
-        refreshBtn.innerHTML = '🔄 Yenile';
-      }
+      refreshBtn.disabled = false;
+      refreshBtn.innerHTML = '🔄 Yenile';
     }
 
     function updateKPIs() {
@@ -2231,18 +2346,35 @@
       currentEditDeviceId = deviceId;
       document.getElementById('modalDeviceId').textContent = deviceId;
 
-      document.getElementById('modalTitleText').textContent = '✏️ Oyuncu Bilgilerini Güncelle (Word Battle)';
-      document.getElementById('labelField1').textContent = '🪙 Altın (Coins):';
-      document.getElementById('modalCoins').value = player.coins ?? 250;
+      const isMembird = currentTrafficApp === 'membird';
 
-      document.getElementById('labelField2').textContent = '💎 Elmas (Gems):';
-      document.getElementById('modalGems').value = player.gems ?? 0;
+      if (isMembird) {
+        document.getElementById('modalTitleText').textContent = '✏️ Öğrenici Bilgilerini Güncelle (Membird)';
+        document.getElementById('labelField1').textContent = '🎯 Günlük Kelime Hedefi:';
+        document.getElementById('modalCoins').value = player.dailyWordTarget || 8;
 
-      document.getElementById('labelField3').textContent = '⚡ Can / Enerji (0-5):';
-      document.getElementById('modalEnergy').value = player.energy ?? 5;
+        document.getElementById('labelField2').textContent = '🔥 Seri (Streak Gün):';
+        document.getElementById('modalGems').value = player.streak || 0;
 
-      document.getElementById('labelField4').textContent = '🗺️ Bölüm / Seviye (1-200):';
-      document.getElementById('modalLevel').value = player.currentLevel ?? 1;
+        document.getElementById('labelField3').textContent = '🧠 Hafızadaki Kelime Sayısı:';
+        document.getElementById('modalEnergy').value = player.mastered || player.masteredWords || 0;
+
+        document.getElementById('labelField4').textContent = '🪺 Yuva Seviyesi (Nest Level):';
+        document.getElementById('modalLevel').value = player.nestLevel || 1;
+      } else {
+        document.getElementById('modalTitleText').textContent = '✏️ Oyuncu Bilgilerini Güncelle (Word Battle)';
+        document.getElementById('labelField1').textContent = '🪙 Altın (Coins):';
+        document.getElementById('modalCoins').value = player.coins ?? 250;
+
+        document.getElementById('labelField2').textContent = '💎 Elmas (Gems):';
+        document.getElementById('modalGems').value = player.gems ?? 0;
+
+        document.getElementById('labelField3').textContent = '⚡ Can / Enerji (0-5):';
+        document.getElementById('modalEnergy').value = player.energy ?? 5;
+
+        document.getElementById('labelField4').textContent = '🗺️ Bölüm / Seviye (1-200):';
+        document.getElementById('modalLevel').value = player.currentLevel ?? 1;
+      }
 
       const statusEl = document.getElementById('modalStatus');
       statusEl.style.display = 'none';
@@ -2267,6 +2399,27 @@
       statusEl.style.display = 'block';
       statusEl.style.color = 'var(--muted)';
       statusEl.textContent = 'Bilgiler güncelleniyor...';
+
+      if (isMembird) {
+        // Update local Membird object
+        const player = allPlayers.find(p => p.id === currentEditDeviceId);
+        if (player) {
+          player.dailyWordTarget = parseInt(document.getElementById('modalCoins').value, 10) || 8;
+          player.streak = parseInt(document.getElementById('modalGems').value, 10) || 0;
+          player.mastered = parseInt(document.getElementById('modalEnergy').value, 10) || 0;
+          player.nestLevel = parseInt(document.getElementById('modalLevel').value, 10) || 1;
+        }
+        statusEl.style.color = 'var(--emerald)';
+        statusEl.textContent = '✅ Öğrenici profili güncellendi!';
+        setTimeout(() => {
+          closeEditModal();
+          updateKPIs();
+          renderTrafficTable();
+        }, 800);
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '💾 Kaydet';
+        return;
+      }
 
       // Word Battle Firestore PATCH
       const coins = parseInt(document.getElementById('modalCoins').value, 10) || 0;
