@@ -1,0 +1,1931 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Membird | Canlı Telemetri & Öğrenme Akışı Paneli</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐦</text></svg>">
+  
+  <!-- Fonts & Chart.js -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #09090b;
+      --bg-surface: #121215;
+      --card-bg: rgba(24, 24, 27, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-border-hover: rgba(56, 189, 248, 0.3);
+      --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+      
+      --text: #f4f4f5;
+      --text-heading: #ffffff;
+      --muted: #a1a1aa;
+      --muted-dark: #71717a;
+      
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.35);
+      --emerald: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.25);
+      --gold: #f59e0b;
+      --purple: #a855f7;
+      --rose: #f43f5e;
+      --sky: #38bdf8;
+      
+      --table-row-even: rgba(255, 255, 255, 0.015);
+      --table-hover: rgba(56, 189, 248, 0.06);
+      --table-border: rgba(255, 255, 255, 0.06);
+      --btn-bg: rgba(255, 255, 255, 0.06);
+      --btn-border: rgba(255, 255, 255, 0.12);
+      --code-bg: rgba(0, 0, 0, 0.4);
+      --badge-ios-bg: rgba(255, 255, 255, 0.08);
+      --badge-ios-border: rgba(255, 255, 255, 0.18);
+      --badge-ios-text: #e4e4e7;
+    }
+
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --bg-surface: #ffffff;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --card-border: rgba(148, 163, 184, 0.2);
+      --card-border-hover: rgba(56, 189, 248, 0.5);
+      --card-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.08);
+      
+      --text: #334155;
+      --text-heading: #0f172a;
+      --muted: #64748b;
+      --muted-dark: #94a3b8;
+      
+      --accent: #0284c7;
+      --accent-glow: rgba(2, 132, 199, 0.25);
+      --emerald: #059669;
+      --emerald-glow: rgba(5, 150, 105, 0.2);
+      --gold: #d97706;
+      --purple: #9333ea;
+      --rose: #e11d48;
+      --sky: #0284c7;
+      
+      --table-row-even: rgba(241, 245, 249, 0.6);
+      --table-hover: rgba(56, 189, 248, 0.08);
+      --table-border: rgba(226, 232, 240, 0.8);
+      --btn-bg: rgba(15, 23, 42, 0.05);
+      --btn-border: rgba(148, 163, 184, 0.3);
+      --code-bg: rgba(241, 245, 249, 0.9);
+      --badge-ios-bg: rgba(0, 0, 0, 0.05);
+      --badge-ios-border: rgba(0, 0, 0, 0.12);
+      --badge-ios-text: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.05) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(168, 85, 247, 0.05) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    .wrapper {
+      max-width: 1480px;
+      margin: 0 auto;
+    }
+
+    /* Top App Navigation Bar */
+    .app-switcher-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+      padding: 10px 18px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      backdrop-filter: blur(12px);
+      flex-wrap: wrap;
+    }
+    .app-switcher-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .app-switcher-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .app-switcher-tabs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .app-switcher-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--btn-border);
+      background: var(--btn-bg);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .app-switcher-btn:hover {
+      border-color: var(--card-border-hover);
+      background: var(--table-hover);
+    }
+    .app-switcher-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+    .app-switcher-btn.active .app-pill {
+      background: rgba(0, 0, 0, 0.25);
+      color: #ffffff;
+      border-color: transparent;
+    }
+    .app-pill {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+      border: 1px solid transparent;
+    }
+    .app-pill.live {
+      background: rgba(16, 185, 129, 0.18);
+      border-color: rgba(16, 185, 129, 0.35);
+      color: var(--emerald);
+    }
+    .app-pill.membird {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: rgba(56, 189, 248, 0.35);
+      color: var(--sky);
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Notice Banner */
+    .notice-banner {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .notice-icon {
+      font-size: 22px;
+      line-height: 1;
+    }
+    .notice-body {
+      flex: 1;
+    }
+    .notice-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+    .notice-text {
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    .notice-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 26px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .logo-badge {
+      width: 48px;
+      height: 48px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: var(--card-shadow);
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-heading);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: var(--accent);
+    }
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+      animation: pulse 2s infinite ease-in-out;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .last-sync {
+      font-size: 12px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--btn-border);
+      background: var(--btn-bg);
+      color: var(--text);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .btn:hover {
+      background: var(--btn-border);
+      color: var(--text-heading);
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+    .btn-primary:hover {
+      filter: brightness(1.1);
+      color: #ffffff;
+    }
+    .btn-theme {
+      background: var(--btn-bg);
+      border-color: var(--btn-border);
+      color: var(--text);
+    }
+    .btn-close {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      border-radius: 4px;
+    }
+    .btn-close:hover {
+      color: var(--text-heading);
+    }
+
+    /* KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 18px 20px;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--card-shadow);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--card-border-hover);
+    }
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+    }
+    .kpi-card.sky::before { background: var(--sky); }
+    .kpi-card.emerald::before { background: var(--emerald); }
+    .kpi-card.gold::before { background: var(--gold); }
+    .kpi-card.purple::before { background: var(--purple); }
+
+    .kpi-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .kpi-value {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--text-heading);
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      margin-bottom: 6px;
+      font-variant-numeric: tabular-nums;
+    }
+    .kpi-subtext {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* Showcase Cards */
+    .country-cards-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .country-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+    .country-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 16px;
+      backdrop-filter: blur(12px);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .country-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      box-shadow: 0 6px 20px var(--accent-glow);
+    }
+    .country-card.active {
+      border-color: var(--accent);
+      background: var(--table-hover);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+    .country-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .country-card-flag-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .country-card-flag {
+      font-size: 24px;
+      line-height: 1;
+    }
+    .country-card-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-heading);
+    }
+    .country-card-count {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+    .country-card-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      font-size: 11px;
+      color: var(--muted);
+      padding-top: 10px;
+      border-top: 1px solid var(--table-border);
+    }
+    .country-stat-box {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .country-stat-label {
+      font-size: 10px;
+      color: var(--muted-dark);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .country-stat-val {
+      font-weight: 800;
+      color: var(--text-heading);
+    }
+
+    /* Charts Grid */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 18px;
+      margin-bottom: 26px;
+    }
+    @media (max-width: 900px) {
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .chart-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--card-shadow);
+    }
+    .chart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .chart-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-heading);
+    }
+    .chart-container {
+      position: relative;
+      height: 260px;
+      width: 100%;
+    }
+
+    /* Table Section */
+    .table-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 22px;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--card-shadow);
+    }
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .table-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-heading);
+    }
+    .table-search {
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      border: 1px solid var(--card-border);
+      background: var(--btn-bg);
+      color: var(--text);
+      outline: none;
+      width: 280px;
+      transition: border-color 0.2s ease;
+    }
+    .table-search:focus {
+      border-color: var(--accent);
+    }
+
+    /* Filter Bars */
+    .traffic-type-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .traffic-type-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--btn-border);
+      background: var(--btn-bg);
+      color: var(--muted);
+      transition: all 0.2s ease;
+    }
+    .traffic-type-btn:hover {
+      color: var(--text);
+      border-color: var(--card-border-hover);
+    }
+    .traffic-type-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+    .traffic-type-btn.btn-real.active {
+      background: var(--emerald);
+      color: #ffffff;
+      border-color: var(--emerald);
+    }
+    .traffic-type-btn.btn-bot.active {
+      background: var(--gold);
+      color: #09090b;
+      border-color: var(--gold);
+    }
+    .type-pill-count {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .emulator-filter-card {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: 12px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .emulator-toggle-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      color: var(--text-heading);
+    }
+    .emulator-toggle-label input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--emerald);
+    }
+    .emulator-status-pill {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      background: var(--btn-bg);
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--card-border);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .filters-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .filter-pill {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--btn-border);
+      background: var(--btn-bg);
+      color: var(--muted);
+      transition: all 0.2s ease;
+    }
+    .filter-pill:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+    .filter-pill.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    /* Table */
+    .table-responsive {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th {
+      text-align: left;
+      padding: 12px 14px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--table-border);
+    }
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--table-border);
+      color: var(--text);
+      vertical-align: middle;
+    }
+    tbody tr:hover {
+      background: var(--table-hover);
+    }
+    tbody tr:nth-child(even) {
+      background: var(--table-row-even);
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .badge-bot {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: var(--gold);
+    }
+    .badge-user {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: var(--emerald);
+    }
+    .badge-new {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: var(--sky);
+    }
+    .badge-android {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--emerald);
+    }
+    .badge-ios {
+      background: var(--badge-ios-bg);
+      border: 1px solid var(--badge-ios-border);
+      color: var(--badge-ios-text);
+    }
+    .screen-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-heading);
+      background: var(--btn-bg);
+      border: 1px solid var(--card-border);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .device-id-code {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .btn-edit {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--btn-border);
+      background: var(--btn-bg);
+      color: var(--accent);
+      transition: all 0.2s ease;
+    }
+    .btn-edit:hover {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+    .modal-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      width: 100%;
+      max-width: 460px;
+      padding: 24px;
+      box-shadow: var(--card-shadow);
+      animation: modalIn 0.2s ease-out;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--table-border);
+    }
+    .modal-header h2 {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-heading);
+    }
+    .modal-body {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .form-input {
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: var(--btn-bg);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: var(--accent);
+    }
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      padding-top: 14px;
+      border-top: 1px solid var(--table-border);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+
+    <!-- Top App Navigation Bar -->
+    <div class="app-switcher-bar">
+      <div class="app-switcher-left">
+        <span class="app-switcher-label">📱 Telemetri Panelleri:</span>
+        <div class="app-switcher-tabs">
+          <a href="./traffic-dashboard.html" class="app-switcher-btn" id="btnAppWordBattle">
+            <span>⚔️</span>
+            <span>Word Battle Paneli</span>
+            <span class="app-pill live">OYUNCU AKIŞI ➔</span>
+          </a>
+          <a href="./membird-dashboard.html" class="app-switcher-btn active" id="btnAppMembird">
+            <span>🐦</span>
+            <span>Membird</span>
+            <span class="app-pill membird">DİL & HAFIZA (CANLI)</span>
+          </a>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="./dashboard.html" class="btn" title="ASO Anahtar Kelime & Sıralama Takip Paneli">
+          <span>📊 ASO & Sıralama Paneli</span>
+          <span>➔</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Membird Security Rules Banner -->
+    <div id="membirdNoticeBanner" class="notice-banner" style="display: none;">
+      <span class="notice-icon">🔒</span>
+      <div class="notice-body">
+        <div class="notice-title">Membird Firestore İzin Notu & Doğrulanmış Telemetri</div>
+        <p class="notice-text">
+          Membird Firestore <code>players</code> koleksiyonu izni restricted ise aşağıdaki kuralı Firebase Console -> Firestore Database -> Rules sekmesine ekleyebilirsiniz:
+        </p>
+        <div class="notice-actions">
+          <code style="background: var(--code-bg); padding: 4px 8px; border-radius: 6px; font-size: 11px; border: 1px solid var(--card-border);">match /players/{deviceId} { allow read, write: if true; }</code>
+          <button class="btn" style="padding: 4px 10px; font-size: 11px;" onclick="copyMembirdRule()">📋 Kuralı Kopyala</button>
+        </div>
+      </div>
+      <button class="btn-close" onclick="document.getElementById('membirdNoticeBanner').style.display='none'">✕</button>
+    </div>
+
+    <!-- Main Header -->
+    <header>
+      <div class="brand">
+        <div class="logo-badge" id="logoBadgeIcon">🐦</div>
+        <div>
+          <h1>
+            <span>Membird Dil Öğrenme</span>
+            <span class="live-indicator"><span class="pulse-dot"></span> Canlı İzleme</span>
+          </h1>
+          <p style="font-size: 12px; color: var(--muted); margin-top: 2px;">
+            Firebase Gerçek Zamanlı Öğrenci Dağılımı, İspanyolca Kelime Hafızası ve Cihaz Akışı
+          </p>
+        </div>
+      </div>
+      <div class="header-controls">
+        <span class="last-sync" id="lastSyncText">Bağlanıyor...</span>
+        <button class="btn btn-theme" id="themeToggleBtn" onclick="toggleDashboardTheme()" title="Açık (Beyaz) / Koyu Temayı Değiştir">
+          <span id="themeIcon">☀️</span>
+          <span id="themeText">Beyaz Tema</span>
+        </button>
+        <button class="btn btn-primary" id="refreshBtn" onclick="fetchLiveFirestoreData()">
+          🔄 Yenile
+        </button>
+        <a href="./index.html" class="btn">🏠 Ana Sayfa</a>
+      </div>
+    </header>
+
+    <!-- Top KPI Grid -->
+    <div class="kpi-grid">
+      <div class="kpi-card sky">
+        <div class="kpi-title">🌍 Aktif Ülkeler</div>
+        <div class="kpi-value" id="kpiCountryCount">--</div>
+        <div class="kpi-subtext" id="kpiCountryCountSub">Öğrencilerin ülkeleri</div>
+      </div>
+
+      <div class="kpi-card emerald">
+        <div class="kpi-title">📱 Toplam Cihaz</div>
+        <div class="kpi-value" id="kpiTotalDevices">--</div>
+        <div class="kpi-subtext" id="kpiTotalDevicesSub">Membird'deki tüm cihazlar</div>
+      </div>
+
+      <div class="kpi-card purple">
+        <div class="kpi-title">⚡ Son 24 Saat Trafiği</div>
+        <div class="kpi-value" id="kpiActive24h">--</div>
+        <div class="kpi-subtext" id="kpiActive24hSub">Son 24 saatte açılan cihazlar</div>
+      </div>
+
+      <div class="kpi-card gold" style="cursor: pointer;" title="Test ve pasif cihazları filtrele" onclick="setTrafficTypeFilter('BOT'); scrollToTable();">
+        <div class="kpi-title">🤖 Test & Emülatör</div>
+        <div class="kpi-value" id="kpiBotCount">--</div>
+        <div class="kpi-subtext">Google / Apple / Simülatör ➔</div>
+      </div>
+
+      <div class="kpi-card emerald" style="cursor: pointer;" title="Sadece aktif olanları filtrele" onclick="setTrafficTypeFilter('REAL'); scrollToTable();">
+        <div class="kpi-title">👤 Aktif Öğrenenler</div>
+        <div class="kpi-value" id="kpiRealUsers">--</div>
+        <div class="kpi-subtext">Kelime çalışan / İlerleyen ➔</div>
+      </div>
+
+      <div class="kpi-card sky" style="cursor: pointer;" onclick="setTrafficTypeFilter('REAL'); scrollToTable();">
+        <div class="kpi-title">🔥 Günlük Seri & Hedef</div>
+        <div class="kpi-value" id="kpiSpecialCount">--</div>
+        <div class="kpi-subtext" id="kpiSpecialSub">Aktif serisi olanlar ➔</div>
+      </div>
+    </div>
+
+    <!-- Country Summary Showcase Cards -->
+    <div class="country-cards-title">
+      📍 Ülke Özeti & Öğrenci Dağılımı
+    </div>
+    <div class="country-cards-grid" id="countryCardsGrid">
+      <!-- Dynamic Country Cards -->
+    </div>
+
+    <!-- Analytics Charts -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">📊 Ülkelere Göre Öğrenci Sayısı Sıralaması</div>
+          <span style="font-size: 11px; color: var(--muted);">Tüm kayıtlar</span>
+        </div>
+        <div class="chart-container">
+          <canvas id="countryBarChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">📱 Platform Dağılımı</div>
+          <span style="font-size: 11px; color: var(--muted);">Android vs iOS</span>
+        </div>
+        <div class="chart-container">
+          <canvas id="platformDoughnutChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Traffic Stream Table -->
+    <div class="table-section">
+      <div class="table-header">
+        <div class="table-title">
+          📋 Canlı Öğrenci Akışı (<span id="tableCountBadge">0</span>)
+        </div>
+        <input 
+          type="text" 
+          id="tableSearch" 
+          class="table-search" 
+          placeholder="Ülke, şehir, cihaz ID veya model ara..."
+          oninput="renderTrafficTable()"
+        />
+      </div>
+
+      <!-- Traffic Type Filter -->
+      <div class="traffic-type-bar">
+        <button class="traffic-type-btn active" id="btnTypeAll" onclick="setTrafficTypeFilter('ALL')">
+          <span>🌐 Tümü</span>
+          <span class="type-pill-count" id="typeCountAll">0</span>
+        </button>
+        <button class="traffic-type-btn btn-real" id="btnTypeReal" onclick="setTrafficTypeFilter('REAL')">
+          <span>👤 Aktif Öğrenenler</span>
+          <span class="type-pill-count" id="typeCountReal">0</span>
+        </button>
+        <button class="traffic-type-btn btn-bot" id="btnTypeBot" onclick="setTrafficTypeFilter('BOT')">
+          <span>🤖 Test & Emülatör</span>
+          <span class="type-pill-count" id="typeCountBot">0</span>
+        </button>
+      </div>
+
+      <!-- Emülatör Filtreleme Kontrolü -->
+      <div class="emulator-filter-card">
+        <label class="emulator-toggle-label">
+          <input type="checkbox" id="excludeEmulatorsToggle" checked onchange="toggleExcludeEmulators()" />
+          <span style="font-weight: 800; font-size: 13px;">🚫 Test & Emülatör Cihazlarını Listeden Çıkar (Sadece Gerçek Öğrenciler)</span>
+        </label>
+        <div class="emulator-status-pill" id="emulatorStatusPill">
+          🛡️ <span id="hiddenEmulatorCount">0</span> test/pasif cihaz gizlendi
+        </div>
+      </div>
+
+      <!-- Quick Country Filter Pills -->
+      <div class="filters-bar" id="filtersBar">
+        <button class="filter-pill active" onclick="setCountryFilter('ALL')">🌐 Tümü</button>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>📍 Konum (Şehir & Ülke)</th>
+              <th>📱 Cihaz & Model</th>
+              <th>🚪 Son Ekran</th>
+              <th>Öğrenci Durumu</th>
+              <th>📚 Hafıza (Öğrenilen Kelimeler)</th>
+              <th>🎯 Günlük Hedef & Düzey</th>
+              <th>Son Görülme</th>
+              <th>Cihaz Kimliği (ID)</th>
+              <th>⚡ İşlem</th>
+            </tr>
+          </thead>
+          <tbody id="trafficTableBody">
+            <tr>
+              <td colspan="9" style="text-align: center; padding: 24px; color: var(--muted);">Veriler yükleniyor...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Edit Player Modal -->
+    <div id="editPlayerModal" class="modal-backdrop" style="display: none;">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2 id="modalTitleText">✏️ Öğrenici Bilgilerini Güncelle</h2>
+          <button class="btn-close" onclick="closeEditModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">
+            Cihaz ID: <code id="modalDeviceId" style="color: var(--gold); font-weight: bold;">--</code>
+          </div>
+          <div class="form-group">
+            <label>🎯 Günlük Kelime Hedefi:</label>
+            <input type="number" id="modalDailyTarget" class="form-input" min="5" max="100" />
+          </div>
+          <div class="form-group">
+            <label>🔥 Seri (Streak Gün):</label>
+            <input type="number" id="modalStreak" class="form-input" min="0" max="999" />
+          </div>
+          <div class="form-group">
+            <label>🧠 Öğrenilen Kelime (Mastered):</label>
+            <input type="number" id="modalMastered" class="form-input" min="0" max="5000" />
+          </div>
+          <div class="form-group">
+            <label>🪺 Yuva Seviyesi (Nest Level 1-10):</label>
+            <input type="number" id="modalNestLevel" class="form-input" min="1" max="10" />
+          </div>
+          <div class="form-group">
+            <label>🎓 Çalışma Seviyesi:</label>
+            <input type="text" id="modalStudyLevel" class="form-input" placeholder="A1, A2, B1..." />
+          </div>
+          <div id="modalStatus" style="font-size: 13px; font-weight: 600; margin-top: 6px; display: none;"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeEditModal()">İptal</button>
+          <button class="btn btn-primary" id="modalSaveBtn" onclick="savePlayerUpdates()">💾 Kaydet</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Membird Configuration
+    const MEMBIRD_CONFIG = {
+      projectId: 'membird-f382f',
+      apiKey: 'AIzaSyBZZ3jSJp2qI4Q5kXp96HHP8EGOIjhuPZE',
+      restUrl: 'https://firestore.googleapis.com/v1/projects/membird-f382f/databases/(default)/documents/players?key=AIzaSyBZZ3jSJp2qI4Q5kXp96HHP8EGOIjhuPZE&pageSize=500',
+    };
+
+    let allPlayers = [];
+    let selectedTrafficTypeFilter = 'ALL'; // 'ALL' | 'REAL' | 'BOT'
+    let selectedCountryFilter = 'ALL';
+    let countryBarChartInstance = null;
+    let platformChartInstance = null;
+    let excludeEmulators = true;
+
+    // Theme Management
+    function getPreferredTheme() {
+      const saved = localStorage.getItem('wb_dashboard_theme');
+      if (saved === 'light' || saved === 'dark') return saved;
+      return 'dark';
+    }
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('wb_dashboard_theme', theme);
+      const icon = document.getElementById('themeIcon');
+      const text = document.getElementById('themeText');
+      if (theme === 'light') {
+        if (icon) icon.textContent = '🌙';
+        if (text) text.textContent = 'Koyu Tema';
+      } else {
+        if (icon) icon.textContent = '☀️';
+        if (text) text.textContent = 'Beyaz Tema';
+      }
+      if (allPlayers && allPlayers.length > 0) {
+        renderCharts();
+      }
+    }
+
+    function toggleDashboardTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+    }
+
+    applyTheme(getPreferredTheme());
+
+    function setTrafficTypeFilter(mode) {
+      selectedTrafficTypeFilter = mode;
+      document.getElementById('btnTypeAll')?.classList.toggle('active', mode === 'ALL');
+      document.getElementById('btnTypeReal')?.classList.toggle('active', mode === 'REAL');
+      document.getElementById('btnTypeBot')?.classList.toggle('active', mode === 'BOT');
+
+      if (selectedCountryFilter !== 'ALL') {
+        const hasPlayers = allPlayers.some(p => {
+          const isBot = classifyPlayer(p).isBot;
+          const matchType = (mode === 'REAL' ? !isBot : (mode === 'BOT' ? isBot : true));
+          const code = (p.countryCode || p.language || 'tr').toLowerCase();
+          return matchType && code === selectedCountryFilter;
+        });
+        if (!hasPlayers) {
+          selectedCountryFilter = 'ALL';
+        }
+      }
+
+      renderFilters();
+      renderTrafficTable();
+    }
+
+    function scrollToTable() {
+      const el = document.querySelector('.table-section');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function copyMembirdRule() {
+      const rule = 'match /players/{deviceId} { allow read, write: if true; }';
+      navigator.clipboard.writeText(rule).then(() => {
+        alert('Kural panoya kopyalandı!\n\nFirebase Console -> Firestore Database -> Rules sekmesine yapıştırıp Publish diyebilirsiniz.');
+      }).catch(() => {
+        prompt('Firebase kuralını kopyalayın:', rule);
+      });
+    }
+
+    // Extended Country Definitions
+    const COUNTRIES = {
+      'es': { name: 'İspanya', flag: '🇪🇸', code: 'ES', desc: 'İspanya Kullanıcıları' },
+      'tr': { name: 'Türkiye', flag: '🇹🇷', code: 'TR', desc: 'Türkiye Kullanıcıları' },
+      'us': { name: 'Amerika Birleşik Devletleri', flag: '🇺🇸', code: 'US', desc: 'ABD Kullanıcıları' },
+      'gb': { name: 'Birleşik Krallık', flag: '🇬🇧', code: 'GB', desc: 'İngiltere Kullanıcıları' },
+      'en': { name: 'Global / İngiltere', flag: '🇬🇧', code: 'EN', desc: 'İngilizce / Global Kullanıcılar' },
+      'de': { name: 'Almanya', flag: '🇩🇪', code: 'DE', desc: 'Almanya Kullanıcıları' },
+      'fr': { name: 'Fransa', flag: '🇫🇷', code: 'FR', desc: 'Fransa Kullanıcıları' },
+      'it': { name: 'İtalya', flag: '🇮🇹', code: 'IT', desc: 'İtalya Kullanıcıları' },
+      'ja': { name: 'Japonya', flag: '🇯🇵', code: 'JP', desc: 'Japonya Kullanıcıları' },
+      'jp': { name: 'Japonya', flag: '🇯🇵', code: 'JP', desc: 'Japonya Kullanıcıları' },
+      'mx': { name: 'Meksika', flag: '🇲🇽', code: 'MX', desc: 'Meksika Kullanıcıları' },
+      'th': { name: 'Tayland', flag: '🇹🇭', code: 'TH', desc: 'Google APAC / Tayland Kullanıcıları' },
+      'pl': { name: 'Polonya', flag: '🇵🇱', code: 'PL', desc: 'Polonya Kullanıcıları' },
+      'nl': { name: 'Hollanda', flag: '🇳🇱', code: 'NL', desc: 'Hollanda Kullanıcıları' },
+      'sv': { name: 'İsveç', flag: '🇸🇪', code: 'SV', desc: 'İsveç Kullanıcıları' },
+      'se': { name: 'İsveç', flag: '🇸🇪', code: 'SE', desc: 'İsveç Kullanıcıları' },
+      'nb': { name: 'Norveç', flag: '🇳🇴', code: 'NB', desc: 'Norveç Kullanıcıları' },
+      'no': { name: 'Norveç', flag: '🇳🇴', code: 'NO', desc: 'Norveç Kullanıcıları' },
+      'ru': { name: 'Rusya', flag: '🇷🇺', code: 'RU', desc: 'Rusya Kullanıcıları' },
+      'br': { name: 'Brezilya', flag: '🇧🇷', code: 'BR', desc: 'Brezilya Kullanıcıları' },
+      'ca': { name: 'Kanada', flag: '🇨🇦', code: 'CA', desc: 'Kanada Kullanıcıları' },
+      'ar': { name: 'Arjantin', flag: '🇦🇷', code: 'AR', desc: 'Arjantin Kullanıcıları' },
+    };
+
+    function getCountryInfo(code) {
+      if (!code) return { name: 'Bilinmiyor', flag: '🌐', code: '??', desc: 'Bilinmeyen Konum' };
+      const lower = String(code).toLowerCase().trim();
+      if (COUNTRIES[lower]) return COUNTRIES[lower];
+      for (const item of Object.values(COUNTRIES)) {
+        if (item.code.toLowerCase() === lower || item.name.toLowerCase() === lower) {
+          return item;
+        }
+      }
+      return { name: code.toUpperCase(), flag: '🌐', code: code.toUpperCase(), desc: 'Diğer' };
+    }
+
+    function parseFirestoreDoc(doc) {
+      const data = {
+        id: doc.name ? doc.name.split('/').pop() : 'unknown',
+      };
+      const fields = doc.fields || {};
+      for (const [key, valObj] of Object.entries(fields)) {
+        if ('stringValue' in valObj) data[key] = valObj.stringValue;
+        else if ('integerValue' in valObj) data[key] = parseInt(valObj.integerValue, 10);
+        else if ('doubleValue' in valObj) data[key] = valObj.doubleValue;
+        else if ('booleanValue' in valObj) data[key] = valObj.booleanValue;
+        else if ('timestampValue' in valObj) data[key] = valObj.timestampValue;
+        else if ('nullValue' in valObj) data[key] = null;
+        else if ('mapValue' in valObj) {
+          const inner = {};
+          for (const [ik, iv] of Object.entries(valObj.mapValue.fields || {})) {
+            if ('stringValue' in iv) inner[ik] = iv.stringValue;
+            else if ('integerValue' in iv) inner[ik] = parseInt(iv.integerValue, 10);
+            else if ('doubleValue' in iv) inner[ik] = iv.doubleValue;
+            else if ('booleanValue' in iv) inner[ik] = iv.booleanValue;
+            else inner[ik] = JSON.stringify(iv);
+          }
+          data[key] = inner;
+        }
+        else data[key] = JSON.stringify(valObj);
+      }
+      return data;
+    }
+
+    function toggleExcludeEmulators() {
+      const checkbox = document.getElementById('excludeEmulatorsToggle');
+      excludeEmulators = checkbox ? checkbox.checked : true;
+      renderFilters();
+      renderTrafficTable();
+      updateEmulatorNotice();
+    }
+
+    function updateEmulatorNotice() {
+      let botCount = 0;
+      allPlayers.forEach(p => {
+        if (classifyPlayer(p).isBot) botCount++;
+      });
+      const pill = document.getElementById('emulatorStatusPill');
+      const countEl = document.getElementById('hiddenEmulatorCount');
+      if (countEl) countEl.textContent = botCount;
+      if (pill) {
+        if (excludeEmulators) {
+          pill.innerHTML = `🛡️ <strong style="color: var(--emerald);">${botCount}</strong> test / emülatör cihaz gizlendi (sadece öğrenciler listede)`;
+        } else {
+          pill.innerHTML = `⚠️ Tüm cihazlar (testler & emülatörler dahil) gösteriliyor`;
+        }
+      }
+    }
+
+    function formatScreenName(screenName) {
+      const membirdMap = {
+        'onboarding': '🚀 Onboarding / Başlangıç',
+        'onboarding-results': '🎯 Hedef Belirleme',
+        'paywall': '💎 Premium Teklifi',
+        'main': '🏠 Ana Sayfa (Learn)',
+        'path': '🗺️ Kategori Yolu',
+        'lesson': '📖 Kelime Dersi',
+        'listen': '🎧 Dinleme Pratiği',
+        'review': '🔁 Tekrar & SRS',
+        'pronunciation': '🗣️ Telaffuz Pratiği',
+        'verbs': '⚡ Fiil Çekimleri',
+        'phrases': '💬 Kalıp İfadeler',
+        'club': '👥 Challenge Hub',
+      };
+      return membirdMap[screenName] || (screenName ? `📱 ${screenName}` : '<span style="color: var(--muted); font-size: 11px;">🏠 Ana Ekran</span>');
+    }
+
+    // Classification engine for Membird
+    function classifyPlayer(player) {
+      const isEmulatorExplicit = player.isEmulator === true;
+      const model = (player.deviceModel || '').toLowerCase();
+      const isp = (player.isp || '').toLowerCase();
+      const isEmulatorModel = /emulator|sdk|generic|vbox|goldfish|ranchu|cuttlefish|simulator/i.test(model);
+      const isDataCenter = /google|amazon|cloud|datacenter/i.test(isp);
+      const isHardwareBot = isEmulatorExplicit || isEmulatorModel || isDataCenter;
+      const mastered = player.mastered || player.masteredWords || 0;
+      const streak = player.streak || 0;
+      const updatedTimestamp = new Date(player.lastSeenAt || player.updatedAt || 0).getTime();
+      const isRecent24h = (Date.now() - updatedTimestamp) < (24 * 60 * 60 * 1000);
+
+      if (isHardwareBot) {
+        let reason = `Emülatör Donanımı (${player.deviceModel || 'SDK'})`;
+        let label = '🤖 Donanım Emülatörü';
+        if (isDataCenter) {
+          reason = `Bulut Veri Merkezi ISP (${player.isp})`;
+          label = '☁️ Bulut Test Sunucusu';
+        }
+        return {
+          type: 'bot_google',
+          label,
+          badgeClass: 'badge-bot',
+          reason,
+          isBot: true,
+        };
+      }
+
+      const isPassiveUntouched = (!player.onboardingCompleted && mastered === 0 && streak === 0);
+
+      if (isPassiveUntouched && !isRecent24h) {
+        return {
+          type: 'bot_google',
+          label: '⏸️ Pasif Cihaz',
+          badgeClass: 'badge-bot',
+          reason: 'Eski Açılış / Onboarding Yapılmamış (0 Kelime / 0 Seri)',
+          isBot: true,
+        };
+      }
+
+      if ((mastered === 0 && streak === 0) && isRecent24h) {
+        return {
+          type: 'real_active',
+          label: '🆕 Yeni İndirme / Başlangıç',
+          badgeClass: 'badge-new',
+          reason: player.onboardingCompleted ? 'Onboarding tamamlandı (İlk derse hazırlanıyor)' : 'Bugün Açıldı (Onboarding aşamasında)',
+          isBot: false,
+        };
+      }
+
+      return {
+        type: 'real_active',
+        label: '👤 Aktif Öğrenen',
+        badgeClass: 'badge-user',
+        reason: `🔥 ${streak} Gün Seri • 🧠 ${mastered} Kelime • Düzey: ${player.studyLevel || 'A1'}`,
+        isBot: false,
+      };
+    }
+
+    function formatTimeAgo(isoString) {
+      if (!isoString) return 'Bilinmiyor';
+      const date = new Date(isoString);
+      const diffMs = Date.now() - date.getTime();
+      const seconds = Math.floor(diffMs / 1000);
+      if (isNaN(seconds)) return 'Bilinmiyor';
+
+      if (seconds < 60) return 'Az önce';
+      const mins = Math.floor(seconds / 60);
+      if (mins < 60) return `${mins} dk önce`;
+      const hours = Math.floor(mins / 60);
+      if (hours < 24) return `${hours} saat önce`;
+      const days = Math.floor(hours / 24);
+      return `${days} gün önce`;
+    }
+
+    async function fetchLiveFirestoreData() {
+      const refreshBtn = document.getElementById('refreshBtn');
+      const lastSyncText = document.getElementById('lastSyncText');
+      const noticeBanner = document.getElementById('membirdNoticeBanner');
+      
+      if (refreshBtn) {
+        refreshBtn.disabled = true;
+        refreshBtn.innerHTML = '⏳ Çekiliyor...';
+      }
+      if (lastSyncText) lastSyncText.textContent = 'Veriler alınıyor...';
+
+      try {
+        const response = await fetch(MEMBIRD_CONFIG.restUrl, {
+          method: 'GET',
+          cache: 'no-store',
+          headers: {
+            'Accept': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        const rawDocs = data.documents || [];
+
+        allPlayers = rawDocs.map(parseFirestoreDoc).map(p => {
+          if (p.profile && typeof p.profile === 'object') {
+            return { ...p, ...p.profile };
+          }
+          return p;
+        });
+
+        if (noticeBanner) noticeBanner.style.display = 'none';
+        const now = new Date();
+        if (lastSyncText) {
+          lastSyncText.textContent = `Membird Canlı: ${allPlayers.length} Cihaz (${now.toLocaleTimeString('tr-TR')})`;
+        }
+      } catch (err) {
+        console.error('[Dashboard] Error:', err);
+        const is403 = String(err.message || '').includes('403');
+        if (noticeBanner) noticeBanner.style.display = is403 ? 'flex' : 'none';
+        if (lastSyncText) lastSyncText.textContent = 'Bağlantı hatası!';
+      }
+
+      // Sort descending by recency
+      allPlayers.sort((a, b) => {
+        const tA = new Date(a.lastSeenAt || a.updatedAt || 0).getTime();
+        const tB = new Date(b.lastSeenAt || b.updatedAt || 0).getTime();
+        return tB - tA;
+      });
+
+      updateKPIs();
+      renderCountryCards();
+      renderCharts();
+      renderFilters();
+      renderTrafficTable();
+
+      if (refreshBtn) {
+        refreshBtn.disabled = false;
+        refreshBtn.innerHTML = '🔄 Yenile';
+      }
+    }
+
+    function updateKPIs() {
+      // 1. Unique Countries
+      const uniqueCountries = new Set(allPlayers.map(p => (p.countryCode || p.language || 'tr').toLowerCase()));
+      document.getElementById('kpiCountryCount').textContent = uniqueCountries.size;
+      document.getElementById('kpiCountryCountSub').textContent = `${Array.from(uniqueCountries).map(c => getCountryInfo(c)?.flag || c.toUpperCase()).join(' ')}`;
+
+      // 2. Total Devices
+      document.getElementById('kpiTotalDevices').textContent = allPlayers.length;
+
+      // 3. Last 24 Hours Active
+      const nowMs = Date.now();
+      const h24Ms = 24 * 60 * 60 * 1000;
+      const active24 = allPlayers.filter(p => {
+        const t = new Date(p.lastSeenAt || p.updatedAt || 0).getTime();
+        return (nowMs - t) < h24Ms;
+      }).length;
+      document.getElementById('kpiActive24h').textContent = active24;
+
+      // 4. Bots vs Real
+      let bots = 0;
+      let real = 0;
+      allPlayers.forEach(p => {
+        if (classifyPlayer(p).isBot) bots++;
+        else real++;
+      });
+
+      document.getElementById('kpiBotCount').textContent = bots;
+      document.getElementById('kpiRealUsers').textContent = real;
+
+      // 5. Special KPI: Streak & Mastered
+      const streakUsers = allPlayers.filter(p => (p.streak || 0) > 0).length;
+      const totalMastered = allPlayers.reduce((acc, p) => acc + (p.mastered || p.masteredWords || 0), 0);
+      document.getElementById('kpiSpecialCount').textContent = streakUsers;
+      document.getElementById('kpiSpecialSub').textContent = `Toplam ${totalMastered} kelime hafızada ➔`;
+
+      // Counters
+      const countAll = document.getElementById('typeCountAll');
+      const countReal = document.getElementById('typeCountReal');
+      const countBot = document.getElementById('typeCountBot');
+      if (countAll) countAll.textContent = allPlayers.length;
+      if (countReal) countReal.textContent = real;
+      if (countBot) countBot.textContent = bots;
+
+      updateEmulatorNotice();
+    }
+
+    function renderCountryCards() {
+      const container = document.getElementById('countryCardsGrid');
+      const countryStats = {};
+
+      allPlayers.forEach(p => {
+        const lang = (p.countryCode || p.language || 'tr').toLowerCase();
+        if (!countryStats[lang]) {
+          countryStats[lang] = {
+            total: 0,
+            android: 0,
+            ios: 0,
+            active24: 0,
+            bots: 0,
+            realUsers: 0,
+            latestTime: 0,
+          };
+        }
+        countryStats[lang].total++;
+        if ((p.platform || '').toLowerCase().includes('ios')) countryStats[lang].ios++;
+        else countryStats[lang].android++;
+
+        const t = new Date(p.lastSeenAt || p.updatedAt || 0).getTime();
+        if ((Date.now() - t) < 24 * 60 * 60 * 1000) countryStats[lang].active24++;
+        if (t > countryStats[lang].latestTime) countryStats[lang].latestTime = t;
+
+        if (classifyPlayer(p).isBot) countryStats[lang].bots++;
+        else countryStats[lang].realUsers++;
+      });
+
+      const sortedCountries = Object.entries(countryStats)
+        .sort((a, b) => b[1].total - a[1].total);
+
+      if (sortedCountries.length === 0) {
+        container.innerHTML = '<div style="color: var(--muted); font-size: 13px;">Henüz ülke kaydı bulunmuyor.</div>';
+        return;
+      }
+
+      container.innerHTML = sortedCountries.map(([code, stats]) => {
+        const info = getCountryInfo(code);
+        const isActiveFilter = selectedCountryFilter === code;
+        return `
+          <div class="country-card ${isActiveFilter ? 'active' : ''}" onclick="setCountryFilter('${code}')">
+            <div class="country-card-header">
+              <div class="country-card-flag-name">
+                <span class="country-card-flag">${info.flag}</span>
+                <div>
+                  <div class="country-card-name">${info.name}</div>
+                  <div style="font-size: 10px; color: var(--muted);">${info.code} • ${formatTimeAgo(stats.latestTime)}</div>
+                </div>
+              </div>
+              <div class="country-card-count">${stats.total}</div>
+            </div>
+            <div class="country-card-stats">
+              <div class="country-stat-box">
+                <span class="country-stat-label">Aktif Öğrenci</span>
+                <span class="country-stat-val" style="color: var(--emerald);">${stats.realUsers}</span>
+              </div>
+              <div class="country-stat-box">
+                <span class="country-stat-label">24S Trafik</span>
+                <span class="country-stat-val" style="color: var(--sky);">${stats.active24}</span>
+              </div>
+              <div class="country-stat-box">
+                <span class="country-stat-label">Test / Bot</span>
+                <span class="country-stat-val" style="color: var(--gold);">${stats.bots}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderCharts() {
+      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+      const textColor = isDark ? '#a1a1aa' : '#64748b';
+      const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+
+      // 1. Country Chart
+      const countryCounts = {};
+      allPlayers.forEach(p => {
+        const code = (p.countryCode || p.language || 'tr').toLowerCase();
+        countryCounts[code] = (countryCounts[code] || 0) + 1;
+      });
+
+      const sortedCountries = Object.entries(countryCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10);
+
+      const labels = sortedCountries.map(([c]) => {
+        const info = getCountryInfo(c);
+        return `${info.flag} ${info.name}`;
+      });
+      const dataValues = sortedCountries.map(([, count]) => count);
+
+      const ctxBar = document.getElementById('countryBarChart').getContext('2d');
+      if (countryBarChartInstance) countryBarChartInstance.destroy();
+
+      countryBarChartInstance = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Cihaz Sayısı',
+            data: dataValues,
+            backgroundColor: '#38bdf8',
+            borderRadius: 6,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              ticks: { color: textColor, font: { size: 10 } },
+              grid: { display: false }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: { color: textColor, precision: 0 },
+              grid: { color: gridColor }
+            }
+          }
+        }
+      });
+
+      // 2. Platform Chart
+      let iosCount = 0;
+      let androidCount = 0;
+      allPlayers.forEach(p => {
+        if ((p.platform || '').toLowerCase().includes('ios')) iosCount++;
+        else androidCount++;
+      });
+
+      const ctxDoughnut = document.getElementById('platformDoughnutChart').getContext('2d');
+      if (platformChartInstance) platformChartInstance.destroy();
+
+      platformChartInstance = new Chart(ctxDoughnut, {
+        type: 'doughnut',
+        data: {
+          labels: ['Android', 'iOS'],
+          datasets: [{
+            data: [androidCount, iosCount],
+            backgroundColor: ['#10b981', '#38bdf8'],
+            borderColor: isDark ? '#18181b' : '#ffffff',
+            borderWidth: 2,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { color: textColor, boxWidth: 12, padding: 14 }
+            }
+          },
+          cutout: '70%',
+        }
+      });
+    }
+
+    function setCountryFilter(code) {
+      selectedCountryFilter = code;
+      renderCountryCards();
+      renderFilters();
+      renderTrafficTable();
+    }
+
+    function renderFilters() {
+      const container = document.getElementById('filtersBar');
+      const countryCounts = {};
+      allPlayers.forEach(p => {
+        const isBot = classifyPlayer(p).isBot;
+        if (selectedTrafficTypeFilter === 'REAL' && isBot) return;
+        if (selectedTrafficTypeFilter === 'BOT' && !isBot) return;
+
+        const c = (p.countryCode || p.language || 'tr').toLowerCase();
+        countryCounts[c] = (countryCounts[c] || 0) + 1;
+      });
+
+      const sorted = Object.entries(countryCounts).sort((a, b) => b[1] - a[1]);
+
+      let html = `
+        <button class="filter-pill ${selectedCountryFilter === 'ALL' ? 'active' : ''}" onclick="setCountryFilter('ALL')">
+          🌐 Tümü (${allPlayers.length})
+        </button>
+      `;
+
+      sorted.forEach(([code, count]) => {
+        const info = getCountryInfo(code);
+        const isActive = selectedCountryFilter === code;
+        html += `
+          <button class="filter-pill ${isActive ? 'active' : ''}" onclick="setCountryFilter('${code}')">
+            ${info.flag} ${info.name} (${count})
+          </button>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function renderTrafficTable() {
+      const tbody = document.getElementById('trafficTableBody');
+      const searchVal = (document.getElementById('tableSearch')?.value || '').toLowerCase().trim();
+
+      const filtered = allPlayers.filter(p => {
+        const classification = classifyPlayer(p);
+
+        // Emulator / Bot exclusion toggle
+        if (excludeEmulators && classification.isBot) return false;
+
+        // Traffic Type tab
+        if (selectedTrafficTypeFilter === 'REAL' && classification.isBot) return false;
+        if (selectedTrafficTypeFilter === 'BOT' && !classification.isBot) return false;
+
+        // Country filter
+        const cCode = (p.countryCode || p.language || 'tr').toLowerCase();
+        if (selectedCountryFilter !== 'ALL' && cCode !== selectedCountryFilter) return false;
+
+        // Search text
+        if (searchVal) {
+          const matchId = String(p.id || '').toLowerCase().includes(searchVal);
+          const matchCity = String(p.city || '').toLowerCase().includes(searchVal);
+          const matchCountry = String(p.country || '').toLowerCase().includes(searchVal);
+          const matchModel = String(p.deviceModel || '').toLowerCase().includes(searchVal);
+          const matchIsp = String(p.isp || '').toLowerCase().includes(searchVal);
+          if (!matchId && !matchCity && !matchCountry && !matchModel && !matchIsp) return false;
+        }
+
+        return true;
+      });
+
+      document.getElementById('tableCountBadge').textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="9" style="text-align: center; padding: 32px; color: var(--muted);">
+              Filtre kriterlerine uygun öğrenci kaydı bulunamadı.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(p => {
+        const cCode = (p.countryCode || p.language || 'tr').toLowerCase();
+        const info = getCountryInfo(cCode);
+        const classification = classifyPlayer(p);
+
+        const typeBadge = `<span class="badge ${classification.badgeClass}">${classification.label}</span>`;
+        const platformBadge = (p.platform || '').toLowerCase().includes('android')
+          ? `<span class="badge badge-android">🤖 Android</span>`
+          : `<span class="badge badge-ios">🍏 iOS</span>`;
+
+        const fullDate = p.lastSeenAt || p.updatedAt ? new Date(p.lastSeenAt || p.updatedAt).toLocaleString('tr-TR') : '--';
+
+        const mastered = p.mastered || p.masteredWords || 0;
+        const reviewing = p.reviewing || 0;
+        const hard = p.hardWords || 0;
+        const streak = p.streak || 0;
+        const level = p.studyLevel || 'A1';
+        const target = p.dailyWordTarget || 10;
+        const nest = p.nestLevel || 1;
+
+        return `
+          <tr>
+            <td>
+              <div style="font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                <span>${info.flag}</span>
+                <span>${p.city || 'Bilinmeyen Şehir'}</span>
+              </div>
+              <div style="font-size: 11px; color: var(--muted); margin-top: 2px;">
+                ${p.country || info.name} ${p.isp ? `• <span style="font-size: 10px;">${p.isp}</span>` : ''}
+              </div>
+            </td>
+            <td>
+              <div style="font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                ${platformBadge}
+                <span>${p.deviceModel || 'Cihaz'}</span>
+              </div>
+              <div style="color: var(--muted); font-size: 11px; margin-top: 2px;">
+                <span class="badge" style="background: var(--btn-bg); font-size: 10px;">v${p.appVersion || '1.3.2'}</span>
+                ${p.timezone ? `• ${p.timezone}` : ''}
+              </div>
+            </td>
+            <td>
+              <div class="screen-badge">
+                ${formatScreenName(p.lastScreen)}
+              </div>
+            </td>
+            <td>
+              <div>${typeBadge}</div>
+              <div style="font-size: 10px; color: var(--muted); margin-top: 3px;">${classification.reason}</div>
+            </td>
+            <td>
+              <div style="font-weight: 800; font-size: 13px; color: var(--accent);">
+                🧠 ${mastered} Öğrenildi
+              </div>
+              <div style="font-size: 11px; color: var(--muted); margin-top: 2px;">
+                🔁 ${reviewing} Tekrar • ⚠️ ${hard} Zor
+              </div>
+            </td>
+            <td>
+              <div style="font-weight: 800; font-size: 13px;">
+                🎯 ${target} / gün • <span style="color: var(--gold);">Düzey: ${level}</span>
+              </div>
+              <div style="font-size: 11px; color: var(--muted); margin-top: 2px;">
+                🔥 ${streak} Gün Seri • 🪺 Yuva Lv. ${nest}
+              </div>
+            </td>
+            <td>
+              <div style="font-weight: 600;">${formatTimeAgo(p.lastSeenAt || p.updatedAt)}</div>
+              <div style="font-size: 10px; color: var(--muted); margin-top: 2px;">${fullDate}</div>
+            </td>
+            <td><span class="device-id-code">${p.id}</span></td>
+            <td>
+              <button class="btn-edit" onclick="openEditModal('${p.id}')">✏️ Düzenle</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Modal Admin Editing Logic
+    let currentEditDeviceId = null;
+
+    function openEditModal(deviceId) {
+      const player = allPlayers.find(p => p.id === deviceId);
+      if (!player) return;
+
+      currentEditDeviceId = deviceId;
+      document.getElementById('modalDeviceId').textContent = deviceId;
+      document.getElementById('modalDailyTarget').value = player.dailyWordTarget || 10;
+      document.getElementById('modalStreak').value = player.streak || 0;
+      document.getElementById('modalMastered').value = player.mastered || player.masteredWords || 0;
+      document.getElementById('modalNestLevel').value = player.nestLevel || 1;
+      document.getElementById('modalStudyLevel').value = player.studyLevel || 'A1';
+
+      const statusEl = document.getElementById('modalStatus');
+      statusEl.style.display = 'none';
+      statusEl.textContent = '';
+
+      document.getElementById('editPlayerModal').style.display = 'flex';
+    }
+
+    function closeEditModal() {
+      document.getElementById('editPlayerModal').style.display = 'none';
+      currentEditDeviceId = null;
+    }
+
+    async function savePlayerUpdates() {
+      if (!currentEditDeviceId) return;
+      const saveBtn = document.getElementById('modalSaveBtn');
+      const statusEl = document.getElementById('modalStatus');
+
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '⏳ Kaydediliyor...';
+      statusEl.style.display = 'block';
+      statusEl.style.color = 'var(--muted)';
+      statusEl.textContent = 'Membird Firestore güncelleniyor...';
+
+      const dailyWordTarget = parseInt(document.getElementById('modalDailyTarget').value, 10) || 10;
+      const streak = parseInt(document.getElementById('modalStreak').value, 10) || 0;
+      const mastered = parseInt(document.getElementById('modalMastered').value, 10) || 0;
+      const nestLevel = parseInt(document.getElementById('modalNestLevel').value, 10) || 1;
+      const studyLevel = String(document.getElementById('modalStudyLevel').value || 'A1').trim();
+
+      const updateTimestamp = new Date().toISOString();
+      const patchUrl = `${MEMBIRD_CONFIG.restUrl.split('?')[0]}/${encodeURIComponent(currentEditDeviceId)}?key=${MEMBIRD_CONFIG.apiKey}&updateMask.fieldPaths=dailyWordTarget&updateMask.fieldPaths=streak&updateMask.fieldPaths=mastered&updateMask.fieldPaths=nestLevel&updateMask.fieldPaths=studyLevel&updateMask.fieldPaths=updatedAt`;
+
+      const payload = {
+        fields: {
+          dailyWordTarget: { integerValue: String(dailyWordTarget) },
+          streak: { integerValue: String(streak) },
+          mastered: { integerValue: String(mastered) },
+          nestLevel: { integerValue: String(nestLevel) },
+          studyLevel: { stringValue: studyLevel },
+          updatedAt: { stringValue: updateTimestamp },
+        }
+      };
+
+      try {
+        const res = await fetch(patchUrl, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        // Update local memory
+        const player = allPlayers.find(p => p.id === currentEditDeviceId);
+        if (player) {
+          player.dailyWordTarget = dailyWordTarget;
+          player.streak = streak;
+          player.mastered = mastered;
+          player.nestLevel = nestLevel;
+          player.studyLevel = studyLevel;
+          player.updatedAt = updateTimestamp;
+        }
+
+        statusEl.style.color = 'var(--emerald)';
+        statusEl.textContent = '✅ Öğrenci profili başarıyla kaydedildi!';
+        setTimeout(() => {
+          closeEditModal();
+          updateKPIs();
+          renderTrafficTable();
+        }, 800);
+      } catch (err) {
+        console.error('Save error:', err);
+        statusEl.style.color = 'var(--rose)';
+        statusEl.textContent = '❌ Kaydedilemedi. Bağlantıyı kontrol edin.';
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '💾 Kaydet';
+      }
+    }
+
+    // Initial load
+    fetchLiveFirestoreData();
+  </script>
+</body>
+</html>
