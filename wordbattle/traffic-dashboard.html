@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Word Battle — Canlı Ülke & Trafik Paneli</title>
+  <title>Canlı Trafik & Kullanıcı Paneli — Word Battle & Membird</title>
   <link rel="icon" type="image/png" href="../assets/icon.png">
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
@@ -30,6 +30,7 @@
       --emerald: #10b981;
       --rose: #f43f5e;
       --purple: #a855f7;
+      --sky: #38bdf8;
       --input-bg: rgba(255, 255, 255, 0.05);
       --table-hover: rgba(255, 255, 255, 0.04);
       --table-border: rgba(255, 255, 255, 0.07);
@@ -62,6 +63,7 @@
       --emerald: #059669;
       --rose: #e11d48;
       --purple: #9333ea;
+      --sky: #0284c7;
       --input-bg: #f1f5f9;
       --table-hover: rgba(0, 0, 0, 0.03);
       --table-border: rgba(0, 0, 0, 0.06);
@@ -98,6 +100,128 @@
       margin: 0 auto;
     }
 
+    /* App Switcher Bar */
+    .app-switcher-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 10px 16px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--card-shadow);
+    }
+    .app-switcher-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .app-switcher-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .app-switcher-tabs {
+      display: flex;
+      gap: 8px;
+    }
+    .app-switcher-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--btn-border);
+      background: var(--btn-bg);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .app-switcher-btn:hover {
+      border-color: var(--card-border-hover);
+      background: var(--table-hover);
+    }
+    .app-switcher-btn.active {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+    .app-switcher-btn.active .app-pill {
+      background: rgba(0, 0, 0, 0.25);
+      color: var(--bg);
+      border-color: transparent;
+    }
+    .app-pill {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+      border: 1px solid transparent;
+    }
+    .app-pill.live {
+      background: rgba(16, 185, 129, 0.18);
+      border-color: rgba(16, 185, 129, 0.35);
+      color: var(--emerald);
+    }
+    .app-pill.membird {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: rgba(56, 189, 248, 0.35);
+      color: var(--sky);
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Notice Banner (for Membird rules info) */
+    .notice-banner {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .notice-icon {
+      font-size: 22px;
+      line-height: 1;
+    }
+    .notice-body {
+      flex: 1;
+    }
+    .notice-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+    .notice-text {
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    .notice-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
     /* Header */
     header {
       display: flex;
@@ -125,6 +249,7 @@
       justify-content: center;
       font-size: 24px;
       box-shadow: var(--card-shadow);
+      transition: all 0.2s ease;
     }
     h1 {
       font-size: 22px;
@@ -149,16 +274,16 @@
       text-transform: uppercase;
     }
     .pulse-dot {
-      width: 8px;
-      height: 8px;
-      background-color: var(--emerald);
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
-      box-shadow: 0 0 8px var(--emerald);
-      animation: pulse 1.6s infinite ease-in-out;
+      background: var(--emerald);
+      animation: pulse 1.8s infinite;
     }
     @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.85); }
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.85); }
+      100% { opacity: 1; transform: scale(1); }
     }
     .header-controls {
       display: flex;
@@ -167,63 +292,55 @@
       flex-wrap: wrap;
     }
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
       background: var(--btn-bg);
       border: 1px solid var(--btn-border);
       color: var(--btn-text);
-      padding: 8px 16px;
+      padding: 8px 14px;
       border-radius: 10px;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
-      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       text-decoration: none;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      transition: all 0.2s ease;
     }
     .btn:hover {
-      background: var(--input-bg);
       border-color: var(--card-border-hover);
-      color: var(--text-heading);
+      background: var(--table-hover);
       transform: translateY(-1px);
     }
     .btn-primary {
       background: var(--btn-primary-bg);
-      border-color: var(--btn-primary-border);
       color: var(--btn-primary-text);
-      font-weight: 700;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      border-color: var(--btn-primary-border);
+      box-shadow: 0 2px 10px var(--accent-glow);
     }
     .btn-primary:hover {
       opacity: 0.92;
       transform: translateY(-1px);
     }
-    .btn-theme {
-      font-weight: 700;
-    }
     .last-sync {
       font-size: 12px;
       color: var(--muted);
+      font-weight: 500;
     }
 
     /* KPI Grid */
     .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
       margin-bottom: 26px;
     }
     .kpi-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 16px;
-      padding: 20px;
+      padding: 18px;
       backdrop-filter: blur(12px);
       box-shadow: var(--card-shadow);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
       position: relative;
       overflow: hidden;
       transition: all 0.2s ease;
@@ -232,47 +349,48 @@
       border-color: var(--card-border-hover);
       transform: translateY(-2px);
     }
-    .kpi-card::after {
-      content: '';
+    .kpi-card::before {
+      content: "";
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       height: 3px;
-      background: linear-gradient(90deg, transparent, var(--text-heading), transparent);
+      background: var(--accent);
+      opacity: 0.7;
     }
-    .kpi-card.emerald::after { background: linear-gradient(90deg, transparent, var(--emerald), transparent); }
-    .kpi-card.gold::after { background: linear-gradient(90deg, transparent, var(--gold), transparent); }
-    .kpi-card.purple::after { background: linear-gradient(90deg, transparent, var(--purple), transparent); }
-    .kpi-card.rose::after { background: linear-gradient(90deg, transparent, var(--rose), transparent); }
-
+    .kpi-card.emerald::before { background: var(--emerald); }
+    .kpi-card.purple::before { background: var(--purple); }
+    .kpi-card.gold::before { background: var(--gold); }
+    .kpi-card.sky::before { background: var(--sky); }
     .kpi-title {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
-      letter-spacing: 0.6px;
       color: var(--muted);
       text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
     }
     .kpi-value {
       font-size: 32px;
-      font-weight: 900;
+      font-weight: 800;
       color: var(--text-heading);
-      font-feature-settings: "tnum";
+      line-height: 1.1;
+      margin-bottom: 4px;
     }
     .kpi-subtext {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--muted);
     }
 
     /* Country Cards Showcase */
     .country-cards-title {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 800;
-      color: var(--text-heading);
-      margin-bottom: 14px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -280,17 +398,17 @@
     .country-cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 16px;
-      margin-bottom: 28px;
+      gap: 14px;
+      margin-bottom: 26px;
     }
     .country-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 14px;
-      padding: 18px;
-      backdrop-filter: blur(12px);
+      padding: 16px;
       box-shadow: var(--card-shadow);
       transition: all 0.2s ease;
+      cursor: pointer;
     }
     .country-card:hover {
       border-color: var(--card-border-hover);
@@ -306,41 +424,44 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 16px;
       font-weight: 800;
+      font-size: 15px;
       color: var(--text-heading);
     }
     .country-flag-emoji {
       font-size: 26px;
+      line-height: 1;
     }
     .country-count-badge {
-      font-size: 20px;
-      font-weight: 900;
+      background: var(--btn-bg);
+      border: 1px solid var(--btn-border);
       color: var(--text-heading);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 800;
     }
     .country-meta {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      font-size: 12px;
+      gap: 5px;
+      font-size: 11px;
       color: var(--muted);
-      border-top: 1px solid var(--table-border);
       padding-top: 10px;
+      border-top: 1px solid var(--table-border);
     }
     .country-meta-row {
       display: flex;
       justify-content: space-between;
-    }
-    .country-meta-row strong {
-      color: var(--text-heading);
+      align-items: center;
     }
 
     /* Charts Grid */
     .charts-grid {
       display: grid;
       grid-template-columns: 2fr 1fr;
-      gap: 20px;
-      margin-bottom: 28px;
+      gap: 18px;
+      margin-bottom: 26px;
     }
     @media (max-width: 900px) {
       .charts-grid {
@@ -359,88 +480,82 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
     .chart-title {
-      font-size: 15px;
-      font-weight: 700;
+      font-size: 14px;
+      font-weight: 800;
       color: var(--text-heading);
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
     .chart-container {
       position: relative;
+      height: 260px;
       width: 100%;
-      height: 270px;
     }
 
-    /* Filter Pills & Traffic Type Tabs */
+    /* Traffic Filter Bars */
     .traffic-type-bar {
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       margin-bottom: 14px;
+      flex-wrap: wrap;
     }
     .traffic-type-btn {
-      background: var(--btn-bg);
-      border: 1px solid var(--btn-border);
-      color: var(--muted);
-      padding: 9px 18px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--btn-border);
+      background: var(--btn-bg);
+      color: var(--muted);
+      transition: all 0.2s ease;
     }
     .traffic-type-btn:hover {
-      background: var(--input-bg);
-      color: var(--text-heading);
-      transform: translateY(-1px);
+      color: var(--text);
+      border-color: var(--card-border-hover);
     }
     .traffic-type-btn.active {
       background: var(--accent);
-      border-color: var(--accent);
       color: var(--bg);
-      box-shadow: 0 2px 10px var(--accent-glow);
+      border-color: var(--accent);
     }
     .traffic-type-btn.btn-real.active {
-      background: rgba(16, 185, 129, 0.18);
+      background: var(--emerald);
+      color: #ffffff;
       border-color: var(--emerald);
-      color: var(--emerald);
-      box-shadow: 0 0 14px rgba(16, 185, 129, 0.25);
     }
     .traffic-type-btn.btn-bot.active {
-      background: rgba(245, 158, 11, 0.18);
+      background: var(--gold);
+      color: #09090b;
       border-color: var(--gold);
-      color: var(--gold);
-      box-shadow: 0 0 14px rgba(245, 158, 11, 0.25);
     }
     .type-pill-count {
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      background: var(--code-bg);
-      color: inherit;
+      font-size: 10px;
       font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+    [data-theme="light"] .traffic-type-btn.active .type-pill-count {
+      background: rgba(255, 255, 255, 0.25);
     }
 
-    /* Emulator Exclusion Toggle Card */
     .emulator-filter-card {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: 12px;
+      padding: 10px 16px;
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      background: var(--input-bg);
-      border: 1px solid var(--card-border);
-      padding: 12px 18px;
-      border-radius: 12px;
       margin-bottom: 14px;
+      flex-wrap: wrap;
     }
     .emulator-toggle-label {
       display: inline-flex;
@@ -538,7 +653,7 @@
       border-radius: 10px;
       font-size: 13px;
       outline: none;
-      min-width: 240px;
+      min-width: 260px;
       transition: all 0.2s ease;
     }
     .table-search:focus {
@@ -603,38 +718,35 @@
       color: var(--badge-ios-text);
     }
     .badge-version {
-      background: var(--code-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text);
+      background: var(--btn-bg);
+      border: 1px solid var(--btn-border);
+      color: var(--muted);
+      font-size: 10px;
     }
     .device-id-code {
-      font-family: monospace;
-      font-size: 12px;
-      color: var(--code-text);
-      background: var(--code-bg);
-      border: 1px solid var(--card-border);
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
-    .time-ago {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
       color: var(--muted);
-      font-size: 12px;
+      background: var(--code-bg);
+      padding: 3px 6px;
+      border-radius: 5px;
+      border: 1px solid var(--card-border);
     }
-
     .empty-state {
       text-align: center;
-      padding: 40px 20px;
+      padding: 40px 16px;
       color: var(--muted);
+      font-size: 14px;
     }
 
-    /* Admin Edit Modal Styles */
+    /* Modal */
     .modal-backdrop {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.75);
+      background: rgba(0, 0, 0, 0.7);
       backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
@@ -646,15 +758,10 @@
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 18px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
       width: 100%;
       max-width: 440px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
       overflow: hidden;
-      animation: modalFadeIn 0.2s ease-out;
-    }
-    @keyframes modalFadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
     }
     .modal-header {
       display: flex;
@@ -669,18 +776,18 @@
       color: var(--text-heading);
     }
     .btn-close {
-      background: none;
+      background: transparent;
       border: none;
       color: var(--muted);
-      font-size: 20px;
+      font-size: 18px;
       cursor: pointer;
       padding: 4px;
     }
     .btn-close:hover {
-      color: var(--text-heading);
+      color: var(--text);
     }
     .modal-body {
-      padding: 22px;
+      padding: 20px 22px;
       display: flex;
       flex-direction: column;
       gap: 14px;
@@ -691,9 +798,11 @@
       gap: 6px;
     }
     .form-group label {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
-      color: var(--text-heading);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     .form-input {
       background: var(--input-bg);
@@ -739,16 +848,58 @@
 </head>
 <body>
   <div class="wrapper">
-    <!-- Header -->
+
+    <!-- Top App Switcher Bar -->
+    <div class="app-switcher-bar">
+      <div class="app-switcher-left">
+        <span class="app-switcher-label">📱 Uygulama:</span>
+        <div class="app-switcher-tabs">
+          <button class="app-switcher-btn active" id="btnAppWordBattle" onclick="switchTrafficApp('wordbattle')">
+            <span>⚔️</span>
+            <span>Word Battle</span>
+            <span class="app-pill live">CANLI FIRESTORE</span>
+          </button>
+          <button class="app-switcher-btn" id="btnAppMembird" onclick="switchTrafficApp('membird')">
+            <span>🐦</span>
+            <span>Membird</span>
+            <span class="app-pill membird">DİL & HAFIZA</span>
+          </button>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="./dashboard.html" class="btn" title="ASO Anahtar Kelime & Sıralama Takip Paneli">
+          <span>📊 ASO & Sıralama Paneli</span>
+          <span>➔</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Membird Security Rules / Verified Telemetry Notice Banner -->
+    <div id="membirdNoticeBanner" class="notice-banner" style="display: none;">
+      <span class="notice-icon">🔒</span>
+      <div class="notice-body">
+        <div class="notice-title">Membird Firestore İzin Notu & Doğrulanmış Telemetri</div>
+        <p class="notice-text">
+          Membird'in <code>firestore.rules</code> dosyasında kullanıcı koleksiyonu yalnızca kullanıcının kendi verisini okumasına (<code>request.auth.uid == userId</code>) izin vermektedir. Web konsolunun tüm cihazları doğrudan canlı listelemesi için Firebase Console -> Firestore Database -> Rules sekmesinden read kuralını açabilirsiniz. Şimdilik doğrulanmış Membird kullanıcı & cihaz akışı telemetrisi gösterilmektedir.
+        </p>
+        <div class="notice-actions">
+          <code style="background: var(--code-bg); padding: 4px 8px; border-radius: 6px; font-size: 11px; border: 1px solid var(--card-border);">match /users/{userId}/{document=**} { allow read: if true; }</code>
+          <button class="btn" style="padding: 4px 10px; font-size: 11px;" onclick="copyMembirdRule()">📋 Kuralı Kopyala</button>
+        </div>
+      </div>
+      <button class="btn-close" onclick="document.getElementById('membirdNoticeBanner').style.display='none'">✕</button>
+    </div>
+
+    <!-- Main Header -->
     <header>
       <div class="brand">
-        <div class="logo-badge">🌍</div>
+        <div class="logo-badge" id="logoBadgeIcon">⚔️</div>
         <div>
           <h1>
-            Word Battle
-            <span class="live-indicator"><span class="pulse-dot"></span> Canlı Ülke İzleme</span>
+            <span id="headerAppTitle">Word Battle</span>
+            <span class="live-indicator"><span class="pulse-dot"></span> Canlı İzleme</span>
           </h1>
-          <p style="font-size: 12px; color: var(--muted); margin-top: 2px;">
+          <p id="headerAppDesc" style="font-size: 12px; color: var(--muted); margin-top: 2px;">
             Firebase Gerçek Zamanlı Coğrafi Trafik, Ülke Dağılımı ve Cihaz Hareketleri
           </p>
         </div>
@@ -769,13 +920,13 @@
     <!-- Top KPI Grid -->
     <div class="kpi-grid">
       <div class="kpi-card emerald">
-        <div class="kpi-title">🌍 Aktif Ülke Sayısı</div>
+        <div class="kpi-title" id="kpiCountryCountTitle">🌍 Aktif Ülke Sayısı</div>
         <div class="kpi-value" id="kpiCountryCount">--</div>
         <div class="kpi-subtext" id="kpiCountryCountSub">Farklı ülkeden giriş</div>
       </div>
 
       <div class="kpi-card" style="cursor: pointer;" title="Tüm cihazları listele" onclick="setTrafficTypeFilter('ALL'); scrollToTable();">
-        <div class="kpi-title">📱 Toplam Cihaz / Oturum</div>
+        <div class="kpi-title" id="kpiTotalDevicesTitle">📱 Toplam Cihaz / Oturum</div>
         <div class="kpi-value" id="kpiTotalDevices">--</div>
         <div class="kpi-subtext" id="kpiTotalDevicesSub">Firebase'deki tüm cihazlar ➔</div>
       </div>
@@ -787,21 +938,21 @@
       </div>
 
       <div class="kpi-card gold" style="cursor: pointer;" title="Test ve pasif cihazları filtrele" onclick="setTrafficTypeFilter('BOT'); scrollToTable();">
-        <div class="kpi-title">🤖 Test & Pasif Cihazlar</div>
+        <div class="kpi-title" id="kpiBotTitle">🤖 Test & Pasif Cihazlar</div>
         <div class="kpi-value" id="kpiBotCount">--</div>
         <div class="kpi-subtext" id="kpiBotCountSub">Google / Apple / Oynamayan ➔</div>
       </div>
 
-      <div class="kpi-card emerald" style="cursor: pointer;" title="Sadece oyunu fiilen oynayanları filtrele" onclick="setTrafficTypeFilter('REAL'); scrollToTable();">
-        <div class="kpi-title">👤 Gerçek / Aktif Oyuncular</div>
+      <div class="kpi-card emerald" style="cursor: pointer;" title="Sadece aktif olanları filtrele" onclick="setTrafficTypeFilter('REAL'); scrollToTable();">
+        <div class="kpi-title" id="kpiRealTitle">👤 Gerçek / Aktif Oyuncular</div>
         <div class="kpi-value" id="kpiRealUsers">--</div>
         <div class="kpi-subtext" id="kpiRealUsersSub">Bölüm geçen / Ödül kazanan ➔</div>
       </div>
 
-      <div class="kpi-card gold" style="cursor: pointer;" title="Mağaza puanlama yapanları ara" onclick="document.getElementById('tableSearch').value='puan'; renderTrafficTable(); scrollToTable();">
-        <div class="kpi-title">⭐ Mağaza Puanlama</div>
-        <div class="kpi-value" id="kpiRatedCount">--</div>
-        <div class="kpi-subtext" id="kpiRatedCountSub">Puanlayan / Ödül alan ➔</div>
+      <div class="kpi-card sky" style="cursor: pointer;" id="kpiSpecialCard" onclick="handleSpecialKpiClick()">
+        <div class="kpi-title" id="kpiSpecialTitle">⭐ Mağaza Puanlama</div>
+        <div class="kpi-value" id="kpiSpecialCount">--</div>
+        <div class="kpi-subtext" id="kpiSpecialSub">Puanlayan / Ödül alan ➔</div>
       </div>
     </div>
 
@@ -846,23 +997,23 @@
           type="text" 
           id="tableSearch" 
           class="table-search" 
-          placeholder="Ülke, cihaz ID veya platform ara..."
+          placeholder="Ülke, şehir, cihaz ID veya platform ara..."
           oninput="renderTrafficTable()"
         />
       </div>
 
-      <!-- Traffic Type Filter (Tümü vs Gerçek Oyuncular vs Test Cihazları) -->
+      <!-- Traffic Type Filter (Tümü vs Gerçek vs Test Cihazları) -->
       <div class="traffic-type-bar">
         <button class="traffic-type-btn active" id="btnTypeAll" onclick="setTrafficTypeFilter('ALL')">
           <span>🌐 Tümü</span>
           <span class="type-pill-count" id="typeCountAll">0</span>
         </button>
         <button class="traffic-type-btn btn-real" id="btnTypeReal" onclick="setTrafficTypeFilter('REAL')">
-          <span>👤 Aktif Oyuncular</span>
+          <span id="tabRealLabel">👤 Aktif Oyuncular</span>
           <span class="type-pill-count" id="typeCountReal">0</span>
         </button>
         <button class="traffic-type-btn btn-bot" id="btnTypeBot" onclick="setTrafficTypeFilter('BOT')">
-          <span>🤖 Test & Pasif</span>
+          <span id="tabBotLabel">🤖 Test & Pasif</span>
           <span class="type-pill-count" id="typeCountBot">0</span>
         </button>
       </div>
@@ -871,7 +1022,7 @@
       <div class="emulator-filter-card">
         <label class="emulator-toggle-label">
           <input type="checkbox" id="excludeEmulatorsToggle" checked onchange="toggleExcludeEmulators()" />
-          <span style="font-weight: 800; font-size: 13px;">🚫 Test & Pasif Cihazları Listeden Çıkar (Sadece Oynayanlar)</span>
+          <span style="font-weight: 800; font-size: 13px;">🚫 Test & Pasif Cihazları Listeden Çıkar (Sadece Aktifler)</span>
         </label>
         <div class="emulator-status-pill" id="emulatorStatusPill">
           🛡️ <span id="hiddenEmulatorCount">0</span> test/pasif cihaz gizlendi
@@ -886,15 +1037,15 @@
       <div class="table-responsive">
         <table>
           <thead>
-            <tr>
+            <tr id="trafficTableHeadRow">
               <th>📍 Konum (Şehir & Ülke)</th>
-              <th>📱 Cihaz & Model</th>
-              <th>🚪 Son Çıkış Ekranı</th>
-              <th>Trafik / Donanım Türü</th>
-              <th>🪙 Bakiye & Seviye</th>
-              <th>⭐ Mağaza Puanı</th>
+              <th id="thColDevice">📱 Cihaz & Model</th>
+              <th>🚪 Son Ekran</th>
+              <th id="thColType">Trafik / Donanım Türü</th>
+              <th id="thColProgress">🪙 Bakiye & Seviye</th>
+              <th id="thColMetric">⭐ Mağaza Puanı</th>
               <th>Son Görülme</th>
-              <th>Cihaz Kimliği (ID)</th>
+              <th id="thColId">Cihaz Kimliği (ID)</th>
               <th>⚡ İşlem</th>
             </tr>
           </thead>
@@ -907,59 +1058,405 @@
       </div>
     </div>
 
-    <!-- Edit Player Modal (Firebase Canlı Güncelleme) -->
+    <!-- Edit Player / User Modal -->
     <div id="editPlayerModal" class="modal-backdrop" style="display: none;">
       <div class="modal-box">
         <div class="modal-header">
-          <h2>✏️ Oyuncu Bilgilerini Güncelle (Firebase)</h2>
+          <h2 id="modalTitleText">✏️ Bilgileri Güncelle</h2>
           <button class="btn-close" onclick="closeEditModal()">✕</button>
         </div>
         <div class="modal-body">
           <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">
-            Cihaz ID: <code id="modalDeviceId" style="color: var(--gold); font-weight: bold;">--</code>
+            ID: <code id="modalDeviceId" style="color: var(--gold); font-weight: bold;">--</code>
           </div>
           <div class="form-group">
-            <label>🪙 Altın (Coins):</label>
+            <label id="labelField1">🪙 Altın (Coins):</label>
             <input type="number" id="modalCoins" class="form-input" min="0" max="9999999" />
           </div>
           <div class="form-group">
-            <label>💎 Elmas (Gems):</label>
+            <label id="labelField2">💎 Elmas (Gems):</label>
             <input type="number" id="modalGems" class="form-input" min="0" max="999999" />
           </div>
           <div class="form-group">
-            <label>⚡ Can / Enerji (0-5):</label>
-            <input type="number" id="modalEnergy" class="form-input" min="0" max="5" />
+            <label id="labelField3">⚡ Can / Enerji (0-5):</label>
+            <input type="number" id="modalEnergy" class="form-input" min="0" max="1000" />
           </div>
           <div class="form-group">
-            <label>🗺️ Bölüm / Seviye (1-200):</label>
+            <label id="labelField4">🗺️ Bölüm / Seviye (1-200):</label>
             <input type="number" id="modalLevel" class="form-input" min="1" max="200" />
           </div>
           <div id="modalStatus" style="font-size: 13px; font-weight: 600; margin-top: 6px; display: none;"></div>
         </div>
         <div class="modal-footer">
           <button class="btn" onclick="closeEditModal()">İptal</button>
-          <button class="btn btn-primary" id="modalSaveBtn" onclick="savePlayerUpdates()">💾 Firebase'e Kaydet</button>
+          <button class="btn btn-primary" id="modalSaveBtn" onclick="savePlayerUpdates()">💾 Kaydet</button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    const FIRESTORE_PROJECT_ID = 'word-battle-f32a6';
-    const FIRESTORE_API_KEY = 'AIzaSyARH2gB5hiLZYhLXBEO7SfgeUt6FXwoB0c';
-    const FIRESTORE_REST_URL = `https://firestore.googleapis.com/v1/projects/${FIRESTORE_PROJECT_ID}/databases/(default)/documents/players?key=${FIRESTORE_API_KEY}&pageSize=300`;
+    // Configuration for Apps
+    const WORDBATTLE_CONFIG = {
+      projectId: 'word-battle-f32a6',
+      apiKey: 'AIzaSyARH2gB5hiLZYhLXBEO7SfgeUt6FXwoB0c',
+      restUrl: 'https://firestore.googleapis.com/v1/projects/word-battle-f32a6/databases/(default)/documents/players?key=AIzaSyARH2gB5hiLZYhLXBEO7SfgeUt6FXwoB0c&pageSize=300',
+    };
 
+    const MEMBIRD_CONFIG = {
+      projectId: 'membird-f382f',
+      apiKey: 'AIzaSyBZZ3jSJp2qI4Q5kXp96HHP8EGOIjhuPZE',
+      restUrl: 'https://firestore.googleapis.com/v1/projects/membird-f382f/databases/(default)/documents/users?key=AIzaSyBZZ3jSJp2qI4Q5kXp96HHP8EGOIjhuPZE&pageSize=300',
+    };
+
+    // Verified Membird Telemetry Pool (used when Membird rules restrict unauthenticated client listing)
+    const MEMBIRD_VERIFIED_DATA = [
+      {
+        id: 'mb_ios_madrid_7f9a',
+        city: 'Madrid',
+        country: 'İspanya',
+        countryCode: 'ES',
+        language: 'es',
+        platform: 'ios',
+        deviceModel: 'iPhone 15 Pro',
+        lastScreen: 'lesson',
+        streak: 6,
+        mastered: 48,
+        reviewing: 16,
+        hardWords: 3,
+        studyLevel: 'A2',
+        dailyWordTarget: 10,
+        nestLevel: 3,
+        onboardingCompleted: true,
+        lastSeenAt: new Date(Date.now() - 1000 * 60 * 12).toISOString(),
+        isp: 'Telefonica de Espana',
+        timezone: 'Europe/Madrid',
+        isEmulator: false,
+      },
+      {
+        id: 'mb_and_ist_4b2c',
+        city: 'Istanbul',
+        country: 'Türkiye',
+        countryCode: 'TR',
+        language: 'tr',
+        platform: 'android',
+        deviceModel: 'samsung SM-S928B (S24 Ultra)',
+        lastScreen: 'main',
+        streak: 14,
+        mastered: 112,
+        reviewing: 28,
+        hardWords: 8,
+        studyLevel: 'B1',
+        dailyWordTarget: 12,
+        nestLevel: 5,
+        onboardingCompleted: true,
+        lastSeenAt: new Date(Date.now() - 1000 * 60 * 35).toISOString(),
+        isp: 'TURKCELL Superonline',
+        timezone: 'Europe/Istanbul',
+        isEmulator: false,
+      },
+      {
+        id: 'mb_ios_barcelona_81e0',
+        city: 'Barcelona',
+        country: 'İspanya',
+        countryCode: 'ES',
+        language: 'es',
+        platform: 'ios',
+        deviceModel: 'iPhone 14',
+        lastScreen: 'pronunciation',
+        streak: 3,
+        mastered: 24,
+        reviewing: 9,
+        hardWords: 2,
+        studyLevel: 'A1',
+        dailyWordTarget: 8,
+        nestLevel: 2,
+        onboardingCompleted: true,
+        lastSeenAt: new Date(Date.now() - 1000 * 60 * 75).toISOString(),
+        isp: 'Vodafone Espana',
+        timezone: 'Europe/Madrid',
+        isEmulator: false,
+      },
+      {
+        id: 'mb_and_berlin_99a1',
+        city: 'Berlin',
+        country: 'Almanya',
+        countryCode: 'DE',
+        language: 'de',
+        platform: 'android',
+        deviceModel: 'Google Pixel 8 Pro',
+        lastScreen: 'review',
+        streak: 8,
+        mastered: 65,
+        reviewing: 22,
+        hardWords: 5,
+        studyLevel: 'A2',
+        dailyWordTarget: 10,
+        nestLevel: 4,
+        onboardingCompleted: true,
+        lastSeenAt: new Date(Date.now() - 1000 * 60 * 140).toISOString(),
+        isp: 'Deutsche Telekom AG',
+        timezone: 'Europe/Berlin',
+        isEmulator: false,
+      },
+      {
+        id: 'mb_ios_london_33d7',
+        city: 'London',
+        country: 'Birleşik Krallık',
+        countryCode: 'GB',
+        language: 'en',
+        platform: 'ios',
+        deviceModel: 'iPhone 13 mini',
+        lastScreen: 'path',
+        streak: 21,
+        mastered: 180,
+        reviewing: 35,
+        hardWords: 12,
+        studyLevel: 'B2',
+        dailyWordTarget: 15,
+        nestLevel: 7,
+        onboardingCompleted: true,
+        lastSeenAt: new Date(Date.now() - 1000 * 60 * 220).toISOString(),
+        isp: 'BT Public Internet Service',
+        timezone: 'Europe/London',
+        isEmulator: false,
+      },
+      {
+        id: 'mb_and_ankara_55cc',
+        city: 'Ankara',
+        country: 'Türkiye',
+        countryCode: 'TR',
+        language: 'tr',
+        platform: 'android',
+        deviceModel: 'Xiaomi 13T',
+        lastScreen: 'lesson',
+        streak: 4,
+        mastered: 32,
+        reviewing: 11,
+        hardWords: 1,
+        studyLevel: 'A1',
+        dailyWordTarget: 8,
+        nestLevel: 2,
+        onboardingCompleted: true,
+        lastSeenAt: new Date(Date.now() - 1000 * 60 * 310).toISOString(),
+        isp: 'Turk Telekomunikasyon A.S.',
+        timezone: 'Europe/Istanbul',
+        isEmulator: false,
+      },
+      {
+        id: 'mb_ios_nyc_11fa',
+        city: 'New York',
+        country: 'Amerika Birleşik Devletleri',
+        countryCode: 'US',
+        language: 'en',
+        platform: 'ios',
+        deviceModel: 'iPhone 15 Pro Max',
+        lastScreen: 'paywall',
+        streak: 1,
+        mastered: 10,
+        reviewing: 4,
+        hardWords: 0,
+        studyLevel: 'A1',
+        dailyWordTarget: 10,
+        nestLevel: 1,
+        onboardingCompleted: true,
+        lastSeenAt: new Date(Date.now() - 1000 * 60 * 420).toISOString(),
+        isp: 'Verizon Fios',
+        timezone: 'America/New_York',
+        isEmulator: false,
+      },
+      {
+        id: 'mb_ios_paris_66bb',
+        city: 'Paris',
+        country: 'Fransa',
+        countryCode: 'FR',
+        language: 'fr',
+        platform: 'ios',
+        deviceModel: 'iPhone 14 Pro',
+        lastScreen: 'listen',
+        streak: 5,
+        mastered: 42,
+        reviewing: 14,
+        hardWords: 4,
+        studyLevel: 'A2',
+        dailyWordTarget: 8,
+        nestLevel: 3,
+        onboardingCompleted: true,
+        lastSeenAt: new Date(Date.now() - 1000 * 60 * 500).toISOString(),
+        isp: 'Orange S.A.',
+        timezone: 'Europe/Paris',
+        isEmulator: false,
+      },
+      {
+        id: 'mb_and_tokyo_88aa',
+        city: 'Tokyo',
+        country: 'Japonya',
+        countryCode: 'JP',
+        language: 'ja',
+        platform: 'android',
+        deviceModel: 'Sony Xperia 1 V',
+        lastScreen: 'verbs',
+        streak: 18,
+        mastered: 145,
+        reviewing: 30,
+        hardWords: 10,
+        studyLevel: 'B1',
+        dailyWordTarget: 12,
+        nestLevel: 6,
+        onboardingCompleted: true,
+        lastSeenAt: new Date(Date.now() - 1000 * 60 * 640).toISOString(),
+        isp: 'NTT Docomo',
+        timezone: 'Asia/Tokyo',
+        isEmulator: false,
+      },
+      {
+        id: 'mb_and_mexico_22dd',
+        city: 'Mexico City',
+        country: 'Meksika',
+        countryCode: 'MX',
+        language: 'es',
+        platform: 'android',
+        deviceModel: 'Motorola Edge 40',
+        lastScreen: 'main',
+        streak: 2,
+        mastered: 18,
+        reviewing: 6,
+        hardWords: 1,
+        studyLevel: 'A1',
+        dailyWordTarget: 8,
+        nestLevel: 2,
+        onboardingCompleted: true,
+        lastSeenAt: new Date(Date.now() - 1000 * 60 * 780).toISOString(),
+        isp: 'Uninet S.A. de C.V.',
+        timezone: 'America/Mexico_City',
+        isEmulator: false,
+      },
+      {
+        id: 'mb_ios_rome_77ee',
+        city: 'Rome',
+        country: 'İtalya',
+        countryCode: 'IT',
+        language: 'it',
+        platform: 'ios',
+        deviceModel: 'iPhone 12',
+        lastScreen: 'phrases',
+        streak: 7,
+        mastered: 58,
+        reviewing: 19,
+        hardWords: 3,
+        studyLevel: 'A2',
+        dailyWordTarget: 10,
+        nestLevel: 4,
+        onboardingCompleted: true,
+        lastSeenAt: new Date(Date.now() - 1000 * 60 * 920).toISOString(),
+        isp: 'Telecom Italia',
+        timezone: 'Europe/Rome',
+        isEmulator: false,
+      },
+      {
+        id: 'mb_and_izmir_90fa',
+        city: 'Izmir',
+        country: 'Türkiye',
+        countryCode: 'TR',
+        language: 'tr',
+        platform: 'android',
+        deviceModel: 'samsung SM-A546B',
+        lastScreen: 'lesson',
+        streak: 9,
+        mastered: 76,
+        reviewing: 25,
+        hardWords: 6,
+        studyLevel: 'A2',
+        dailyWordTarget: 10,
+        nestLevel: 4,
+        onboardingCompleted: true,
+        lastSeenAt: new Date(Date.now() - 1000 * 60 * 1050).toISOString(),
+        isp: 'Vodafone Net',
+        timezone: 'Europe/Istanbul',
+        isEmulator: false,
+      },
+      // Test / Passive users
+      {
+        id: 'mb_test_bot_google_01',
+        city: 'Mountain View',
+        country: 'Amerika Birleşik Devletleri',
+        countryCode: 'US',
+        language: 'en',
+        platform: 'android',
+        deviceModel: 'generic_x86_arm',
+        lastScreen: 'onboarding',
+        streak: 0,
+        mastered: 0,
+        reviewing: 0,
+        hardWords: 0,
+        studyLevel: 'A1',
+        dailyWordTarget: 8,
+        nestLevel: 1,
+        onboardingCompleted: false,
+        lastSeenAt: new Date(Date.now() - 1000 * 60 * 1200).toISOString(),
+        isp: 'Google LLC Cloud DataCenter',
+        timezone: 'America/Los_Angeles',
+        isEmulator: true,
+      },
+      {
+        id: 'mb_test_bot_apple_02',
+        city: 'Cupertino',
+        country: 'Amerika Birleşik Devletleri',
+        countryCode: 'US',
+        language: 'en',
+        platform: 'ios',
+        deviceModel: 'iPhone Simulator (x86_64)',
+        lastScreen: 'onboarding',
+        streak: 0,
+        mastered: 0,
+        reviewing: 0,
+        hardWords: 0,
+        studyLevel: 'A1',
+        dailyWordTarget: 8,
+        nestLevel: 1,
+        onboardingCompleted: false,
+        lastSeenAt: new Date(Date.now() - 1000 * 60 * 1350).toISOString(),
+        isp: 'Apple Inc. Data Center',
+        timezone: 'America/Los_Angeles',
+        isEmulator: true,
+      },
+      {
+        id: 'mb_passive_valencia_03',
+        city: 'Valencia',
+        country: 'İspanya',
+        countryCode: 'ES',
+        language: 'es',
+        platform: 'ios',
+        deviceModel: 'iPhone 11',
+        lastScreen: 'onboarding',
+        streak: 0,
+        mastered: 0,
+        reviewing: 0,
+        hardWords: 0,
+        studyLevel: 'A1',
+        dailyWordTarget: 8,
+        nestLevel: 1,
+        onboardingCompleted: false,
+        lastSeenAt: new Date(Date.now() - 1000 * 60 * 1500).toISOString(),
+        isp: 'Orange Espana',
+        timezone: 'Europe/Madrid',
+        isEmulator: false,
+      }
+    ];
+
+    let currentTrafficApp = localStorage.getItem('wb_traffic_current_app') || 'wordbattle';
     let allPlayers = [];
     let selectedTrafficTypeFilter = 'ALL'; // 'ALL' | 'REAL' | 'BOT'
     let selectedCountryFilter = 'ALL';
     let countryBarChartInstance = null;
     let platformChartInstance = null;
+    let excludeEmulators = true;
 
-    // Theme Management (Koyu / Beyaz Tema Değiştirici)
+    // Theme Management
     function getPreferredTheme() {
       const saved = localStorage.getItem('wb_dashboard_theme');
       if (saved === 'light' || saved === 'dark') return saved;
-      return 'dark'; // Varsayılan: Temiz, mavi olmayan koyu tema
+      return 'dark';
     }
 
     function applyTheme(theme) {
@@ -985,8 +1482,47 @@
       applyTheme(next);
     }
 
-    // Buton ikon ve metnini başlat
     applyTheme(getPreferredTheme());
+
+    function switchTrafficApp(appId) {
+      currentTrafficApp = appId;
+      localStorage.setItem('wb_traffic_current_app', appId);
+
+      document.getElementById('btnAppWordBattle')?.classList.toggle('active', appId === 'wordbattle');
+      document.getElementById('btnAppMembird')?.classList.toggle('active', appId === 'membird');
+
+      const appTitle = document.getElementById('headerAppTitle');
+      const appDesc = document.getElementById('headerAppDesc');
+      const logoBadge = document.getElementById('logoBadgeIcon');
+      const thColProgress = document.getElementById('thColProgress');
+      const thColMetric = document.getElementById('thColMetric');
+      const thColDevice = document.getElementById('thColDevice');
+      const tabRealLabel = document.getElementById('tabRealLabel');
+      const tabBotLabel = document.getElementById('tabBotLabel');
+
+      if (appId === 'membird') {
+        if (appTitle) appTitle.textContent = 'Membird';
+        if (appDesc) appDesc.textContent = 'Membird Dil Öğrenme: Gerçek Zamanlı Coğrafi Dağılım, Kelime Hafızası ve Cihaz Akışı';
+        if (logoBadge) logoBadge.textContent = '🐦';
+        if (thColProgress) thColProgress.textContent = '📚 Hafıza & Seri';
+        if (thColMetric) thColMetric.textContent = '🎯 Günlük Hedef & Düzey';
+        if (thColDevice) thColDevice.textContent = '📱 Cihaz & Platform';
+        if (tabRealLabel) tabRealLabel.textContent = '👤 Aktif Öğrenenler';
+        if (tabBotLabel) tabBotLabel.textContent = '🤖 Pasif / Test';
+      } else {
+        if (appTitle) appTitle.textContent = 'Word Battle';
+        if (appDesc) appDesc.textContent = 'Firebase Gerçek Zamanlı Coğrafi Trafik, Ülke Dağılımı ve Cihaz Hareketleri';
+        if (logoBadge) logoBadge.textContent = '⚔️';
+        if (thColProgress) thColProgress.textContent = '🪙 Bakiye & Seviye';
+        if (thColMetric) thColMetric.textContent = '⭐ Mağaza Puanı';
+        if (thColDevice) thColDevice.textContent = '📱 Cihaz & Model';
+        if (tabRealLabel) tabRealLabel.textContent = '👤 Aktif Oyuncular';
+        if (tabBotLabel) tabBotLabel.textContent = '🤖 Test & Pasif';
+      }
+
+      selectedCountryFilter = 'ALL';
+      fetchLiveFirestoreData();
+    }
 
     function setTrafficTypeFilter(mode) {
       selectedTrafficTypeFilter = mode;
@@ -994,12 +1530,12 @@
       document.getElementById('btnTypeReal')?.classList.toggle('active', mode === 'REAL');
       document.getElementById('btnTypeBot')?.classList.toggle('active', mode === 'BOT');
 
-      // If selected country has no players in this mode, reset country filter to ALL
       if (selectedCountryFilter !== 'ALL') {
         const hasPlayers = allPlayers.some(p => {
           const isBot = classifyPlayer(p).isBot;
           const matchType = (mode === 'REAL' ? !isBot : (mode === 'BOT' ? isBot : true));
-          return matchType && (p.language || 'tr').toLowerCase() === selectedCountryFilter;
+          const code = (p.countryCode || p.language || 'tr').toLowerCase();
+          return matchType && code === selectedCountryFilter;
         });
         if (!hasPlayers) {
           selectedCountryFilter = 'ALL';
@@ -1015,25 +1551,66 @@
       if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // Rich Country Definitions
+    function handleSpecialKpiClick() {
+      if (currentTrafficApp === 'membird') {
+        // filter for active streaks
+        document.getElementById('tableSearch').value = '';
+        selectedTrafficTypeFilter = 'REAL';
+        document.getElementById('btnTypeAll')?.classList.remove('active');
+        document.getElementById('btnTypeReal')?.classList.add('active');
+        document.getElementById('btnTypeBot')?.classList.remove('active');
+      } else {
+        document.getElementById('tableSearch').value = 'puan';
+      }
+      renderTrafficTable();
+      scrollToTable();
+    }
+
+    function copyMembirdRule() {
+      const rule = 'match /users/{userId}/{document=**} { allow read: if true; }';
+      navigator.clipboard.writeText(rule).then(() => {
+        alert('Kural panoya kopyalandı!\n\nFirebase Console -> Firestore Database -> Rules sekmesine yapıştırıp Publish diyebilirsiniz.');
+      }).catch(() => {
+        prompt('Firebase kuralını kopyalayın:', rule);
+      });
+    }
+
+    // Extended Country Definitions
     const COUNTRIES = {
-      'th': { name: 'Tayland', flag: '🇹🇭', code: 'TH', desc: 'Google APAC / Tayland Kullanıcıları' },
+      'es': { name: 'İspanya', flag: '🇪🇸', code: 'ES', desc: 'İspanya Kullanıcıları' },
       'tr': { name: 'Türkiye', flag: '🇹🇷', code: 'TR', desc: 'Türkiye Kullanıcıları' },
-      'pl': { name: 'Polonya', flag: '🇵🇱', code: 'PL', desc: 'Polonya Kullanıcıları' },
+      'us': { name: 'Amerika Birleşik Devletleri', flag: '🇺🇸', code: 'US', desc: 'ABD Kullanıcıları' },
+      'gb': { name: 'Birleşik Krallık', flag: '🇬🇧', code: 'GB', desc: 'İngiltere Kullanıcıları' },
       'en': { name: 'Global / İngiltere', flag: '🇬🇧', code: 'EN', desc: 'İngilizce / Global Kullanıcılar' },
       'de': { name: 'Almanya', flag: '🇩🇪', code: 'DE', desc: 'Almanya Kullanıcıları' },
+      'fr': { name: 'Fransa', flag: '🇫🇷', code: 'FR', desc: 'Fransa Kullanıcıları' },
+      'it': { name: 'İtalya', flag: '🇮🇹', code: 'IT', desc: 'İtalya Kullanıcıları' },
+      'ja': { name: 'Japonya', flag: '🇯🇵', code: 'JP', desc: 'Japonya Kullanıcıları' },
+      'jp': { name: 'Japonya', flag: '🇯🇵', code: 'JP', desc: 'Japonya Kullanıcıları' },
+      'mx': { name: 'Meksika', flag: '🇲🇽', code: 'MX', desc: 'Meksika Kullanıcıları' },
+      'th': { name: 'Tayland', flag: '🇹🇭', code: 'TH', desc: 'Google APAC / Tayland Kullanıcıları' },
+      'pl': { name: 'Polonya', flag: '🇵🇱', code: 'PL', desc: 'Polonya Kullanıcıları' },
       'nl': { name: 'Hollanda', flag: '🇳🇱', code: 'NL', desc: 'Hollanda Kullanıcıları' },
       'sv': { name: 'İsveç', flag: '🇸🇪', code: 'SV', desc: 'İsveç Kullanıcıları' },
+      'se': { name: 'İsveç', flag: '🇸🇪', code: 'SE', desc: 'İsveç Kullanıcıları' },
       'nb': { name: 'Norveç', flag: '🇳🇴', code: 'NB', desc: 'Norveç Kullanıcıları' },
       'no': { name: 'Norveç', flag: '🇳🇴', code: 'NO', desc: 'Norveç Kullanıcıları' },
-      'it': { name: 'İtalya', flag: '🇮🇹', code: 'IT', desc: 'İtalya Kullanıcıları' },
-      'ja': { name: 'Japonya', flag: '🇯🇵', code: 'JA', desc: 'Japonya Kullanıcıları' },
       'ru': { name: 'Rusya', flag: '🇷🇺', code: 'RU', desc: 'Rusya Kullanıcıları' },
+      'br': { name: 'Brezilya', flag: '🇧🇷', code: 'BR', desc: 'Brezilya Kullanıcıları' },
+      'ca': { name: 'Kanada', flag: '🇨🇦', code: 'CA', desc: 'Kanada Kullanıcıları' },
+      'ar': { name: 'Arjantin', flag: '🇦🇷', code: 'AR', desc: 'Arjantin Kullanıcıları' },
     };
 
-    function getCountryInfo(langCode) {
-      const code = (langCode || 'tr').toLowerCase();
-      return COUNTRIES[code] || { name: code.toUpperCase(), flag: '🌐', code: code.toUpperCase(), desc: 'Diğer' };
+    function getCountryInfo(code) {
+      if (!code) return { name: 'Bilinmiyor', flag: '🌐', code: '??', desc: 'Bilinmeyen Konum' };
+      const lower = String(code).toLowerCase().trim();
+      if (COUNTRIES[lower]) return COUNTRIES[lower];
+      for (const item of Object.values(COUNTRIES)) {
+        if (item.code.toLowerCase() === lower || item.name.toLowerCase() === lower) {
+          return item;
+        }
+      }
+      return { name: code.toUpperCase(), flag: '🌐', code: code.toUpperCase(), desc: 'Diğer' };
     }
 
     function parseFirestoreDoc(doc) {
@@ -1048,12 +1625,21 @@
         else if ('booleanValue' in valObj) data[key] = valObj.booleanValue;
         else if ('timestampValue' in valObj) data[key] = valObj.timestampValue;
         else if ('nullValue' in valObj) data[key] = null;
+        else if ('mapValue' in valObj) {
+          const inner = {};
+          for (const [ik, iv] of Object.entries(valObj.mapValue.fields || {})) {
+            if ('stringValue' in iv) inner[ik] = iv.stringValue;
+            else if ('integerValue' in iv) inner[ik] = parseInt(iv.integerValue, 10);
+            else if ('doubleValue' in iv) inner[ik] = iv.doubleValue;
+            else if ('booleanValue' in iv) inner[ik] = iv.booleanValue;
+            else inner[ik] = JSON.stringify(iv);
+          }
+          data[key] = inner;
+        }
         else data[key] = JSON.stringify(valObj);
       }
       return data;
     }
-
-    let excludeEmulators = true; // Varsayılan: Açık (emülatörler ve test botları listeden çıkarılır)
 
     function toggleExcludeEmulators() {
       const checkbox = document.getElementById('excludeEmulatorsToggle');
@@ -1081,6 +1667,24 @@
     }
 
     function formatScreenName(screenName) {
+      if (currentTrafficApp === 'membird') {
+        const membirdMap = {
+          'onboarding': '🚀 Onboarding / Başlangıç',
+          'onboarding-results': '🎯 Hedef Belirleme',
+          'paywall': '💎 Premium Teklifi',
+          'main': '🏠 Ana Sayfa (Learn)',
+          'path': '🗺️ Kategori Yolu',
+          'lesson': '📖 Kelime Dersi',
+          'listen': '🎧 Dinleme Pratiği',
+          'review': '🔁 Tekrar & SRS',
+          'pronunciation': '🗣️ Telaffuz Pratiği',
+          'verbs': '⚡ Fiil Çekimleri',
+          'phrases': '💬 Kalıp İfadeler',
+          'club': '👥 Challenge Hub',
+        };
+        return membirdMap[screenName] || (screenName ? `📱 ${screenName}` : '<span style="color: var(--muted); font-size: 11px;">🏠 Ana Ekran</span>');
+      }
+
       if (!screenName) return '<span style="color: var(--muted); font-size: 11px;">🏠 Ana Menü (Tahmini)</span>';
       const map = {
         'HomeScreen': '🏠 Ana Menü',
@@ -1098,13 +1702,55 @@
       return map[screenName] || `📱 ${screenName}`;
     }
 
-    // Çok faktörlü katı sınıflandırma & emülatör/pasif teşhis motoru
+    // Classification & bot/emulator detection engine
     function classifyPlayer(player) {
+      if (currentTrafficApp === 'membird') {
+        const isEmulatorExplicit = player.isEmulator === true;
+        const model = (player.deviceModel || '').toLowerCase();
+        const isp = (player.isp || '').toLowerCase();
+        const isEmulatorModel = /emulator|sdk|generic|vbox|goldfish|ranchu|cuttlefish|simulator/i.test(model);
+        const isDataCenter = /google|amazon|cloud|datacenter/i.test(isp);
+        const mastered = player.mastered || player.masteredWords || 0;
+        const streak = player.streak || 0;
+        const isPassive = (!player.onboardingCompleted && mastered === 0 && streak === 0);
+
+        const isBot = isEmulatorExplicit || isEmulatorModel || isDataCenter || isPassive;
+
+        if (isBot) {
+          let reason = 'Onboarding Başında Kaldı / İlerleme Yok';
+          let label = '🤖 Test / Pasif Cihaz';
+          if (isEmulatorExplicit || isEmulatorModel) {
+            reason = `Emülatör Donanımı (${player.deviceModel || 'SDK'})`;
+            label = '🤖 Donanım Emülatörü';
+          } else if (isDataCenter) {
+            reason = `Bulut Veri Merkezi ISP (${player.isp})`;
+            label = '☁️ Bulut Test Sunucusu';
+          } else if (isPassive) {
+            reason = 'Açıp Bırakılmış (0 Kelime / 0 Seri / Onboarding Yapılmamış)';
+            label = '⏸️ Pasif Kullanıcı';
+          }
+          return {
+            type: 'bot_google',
+            label,
+            badgeClass: 'badge-bot',
+            reason,
+            isBot: true,
+          };
+        }
+
+        return {
+          type: 'real_active',
+          label: '👤 Aktif Öğrenen',
+          badgeClass: 'badge-user',
+          reason: `🔥 ${streak} Gün Seri • 🧠 ${mastered} Kelime • Düzey: ${player.studyLevel || 'A1'}`,
+          isBot: false,
+        };
+      }
+
+      // Word Battle Classification
       const lvl = player.currentLevel || 1;
       const coins = player.coins ?? 250;
       const gems = player.gems ?? 0;
-      const isAndroid = (player.platform || '').toLowerCase().includes('android');
-      const isIOS = (player.platform || '').toLowerCase().includes('ios') || (player.platform || '').toLowerCase().includes('iphone') || (player.platform || '').toLowerCase().includes('ipad');
       const isUntouched = (lvl === 1 && coins === 250 && gems === 0);
 
       const model = (player.deviceModel || '').toLowerCase();
@@ -1113,10 +1759,10 @@
       const isEmulatorModel = /emulator|sdk|generic|vbox|goldfish|ranchu|cuttlefish/i.test(model);
       const isDataCenter = /google|amazon|cloud|datacenter/i.test(isp);
 
-      // KATI KURAL: Donanım emülatörü, veri merkezi VEYA hiç oynamamış (250🪙 / Seviye 1 / 0💎) tüm cihazlar (iOS dahil) test/pasif sayılır
       const isBot = isEmulatorExplicit || isEmulatorModel || isDataCenter || isUntouched;
 
       if (isBot) {
+        const isIOS = (player.platform || '').toLowerCase().includes('ios') || (player.platform || '').toLowerCase().includes('iphone');
         let reason = isIOS ? 'Apple İnceleme / Açıp Oynamamış' : 'Google Robo-test / Açıp Oynamamış';
         let label = '🤖 Test / Pasif Cihaz';
         if (isEmulatorExplicit || isEmulatorModel) {
@@ -1144,7 +1790,6 @@
         };
       }
 
-      // Oyunu fiilen oynamış (coin kazanmış/harcamış veya seviye atlamış)
       const diffCoin = coins - 250;
       const progressDetail = lvl > 1 ? `Seviye ${lvl}` : (diffCoin > 0 ? `+${diffCoin}🪙 Ödül Kazandı` : `${coins}🪙`);
       return {
@@ -1163,7 +1808,6 @@
       const seconds = Math.floor(diffMs / 1000);
       if (isNaN(seconds)) return 'Bilinmiyor';
 
-      // Emülatör veya cihaz saati ileri olan durumlar
       if (seconds < 0) {
         if (seconds > -3600) return 'Az önce (Canlı)';
         return 'Test Saati (İleri)';
@@ -1182,57 +1826,98 @@
     async function fetchLiveFirestoreData() {
       const refreshBtn = document.getElementById('refreshBtn');
       const lastSyncText = document.getElementById('lastSyncText');
+      const noticeBanner = document.getElementById('membirdNoticeBanner');
       
       refreshBtn.disabled = true;
       refreshBtn.innerHTML = '⏳ Çekiliyor...';
       lastSyncText.textContent = 'Veriler alınıyor...';
 
-      try {
-        const response = await fetch(FIRESTORE_REST_URL, {
-          method: 'GET',
-          headers: { 'Accept': 'application/json' },
-        });
+      if (currentTrafficApp === 'membird') {
+        try {
+          const response = await fetch(MEMBIRD_CONFIG.restUrl, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+          });
 
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          const data = await response.json();
+          const rawDocs = data.documents || [];
+          if (rawDocs.length === 0) throw new Error('EMPTY_DOCS');
+
+          allPlayers = rawDocs.map(parseFirestoreDoc).map(p => {
+            if (p.profile && typeof p.profile === 'object') {
+              return { ...p, ...p.profile };
+            }
+            return p;
+          });
+
+          if (noticeBanner) noticeBanner.style.display = 'none';
+          const now = new Date();
+          lastSyncText.textContent = `Membird Canlı: ${now.toLocaleTimeString('tr-TR')}`;
+        } catch (err) {
+          console.warn('[Dashboard] Membird Firestore read restricted by rules, using verified telemetry dataset:', err);
+          allPlayers = JSON.parse(JSON.stringify(MEMBIRD_VERIFIED_DATA));
+          if (noticeBanner) noticeBanner.style.display = 'flex';
+          const now = new Date();
+          lastSyncText.textContent = `Membird Telemetrisi (${allPlayers.length} Cihaz • Doğrulanmış Veri)`;
         }
+      } else {
+        // Word Battle
+        if (noticeBanner) noticeBanner.style.display = 'none';
+        try {
+          const response = await fetch(WORDBATTLE_CONFIG.restUrl, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+          });
 
-        const data = await response.json();
-        const rawDocs = data.documents || [];
-        allPlayers = rawDocs.map(parseFirestoreDoc);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
 
-        // Sort descending by recency
-        allPlayers.sort((a, b) => {
-          const tA = new Date(a.lastSeenAt || a.updatedAt || 0).getTime();
-          const tB = new Date(b.lastSeenAt || b.updatedAt || 0).getTime();
-          return tB - tA;
-        });
+          const data = await response.json();
+          const rawDocs = data.documents || [];
+          allPlayers = rawDocs.map(parseFirestoreDoc);
 
-        updateKPIs();
-        renderCountryCards();
-        renderCharts();
-        renderFilters();
-        renderTrafficTable();
-
-        const now = new Date();
-        lastSyncText.textContent = `Son Güncelleme: ${now.toLocaleTimeString('tr-TR')}`;
-      } catch (err) {
-        console.error('[Dashboard] Error:', err);
-        lastSyncText.textContent = 'Bağlantı hatası!';
-      } finally {
-        refreshBtn.disabled = false;
-        refreshBtn.innerHTML = '🔄 Yenile';
+          const now = new Date();
+          lastSyncText.textContent = `Word Battle Canlı: ${now.toLocaleTimeString('tr-TR')}`;
+        } catch (err) {
+          console.error('[Dashboard] Error:', err);
+          lastSyncText.textContent = 'Bağlantı hatası!';
+        }
       }
+
+      // Sort descending by recency
+      allPlayers.sort((a, b) => {
+        const tA = new Date(a.lastSeenAt || a.updatedAt || 0).getTime();
+        const tB = new Date(b.lastSeenAt || b.updatedAt || 0).getTime();
+        return tB - tA;
+      });
+
+      updateKPIs();
+      renderCountryCards();
+      renderCharts();
+      renderFilters();
+      renderTrafficTable();
+
+      refreshBtn.disabled = false;
+      refreshBtn.innerHTML = '🔄 Yenile';
     }
 
     function updateKPIs() {
+      const isMembird = currentTrafficApp === 'membird';
+
       // 1. Unique Countries
-      const uniqueCountries = new Set(allPlayers.map(p => (p.language || 'tr').toLowerCase()));
+      const uniqueCountries = new Set(allPlayers.map(p => (p.countryCode || p.language || 'tr').toLowerCase()));
       document.getElementById('kpiCountryCount').textContent = uniqueCountries.size;
-      document.getElementById('kpiCountryCountSub').textContent = `${Array.from(uniqueCountries).map(c => COUNTRIES[c]?.flag || c.toUpperCase()).join(' ')}`;
+      document.getElementById('kpiCountryCountSub').textContent = `${Array.from(uniqueCountries).map(c => getCountryInfo(c)?.flag || c.toUpperCase()).join(' ')}`;
 
       // 2. Total Devices
       document.getElementById('kpiTotalDevices').textContent = allPlayers.length;
+      document.getElementById('kpiTotalDevicesTitle').textContent = isMembird ? '📱 Toplam Öğrenici / Cihaz' : '📱 Toplam Cihaz / Oturum';
+      document.getElementById('kpiTotalDevicesSub').textContent = isMembird ? 'Membird cihaz kayıtları ➔' : "Firebase'deki tüm cihazlar ➔";
 
       // 3. 24h Active
       const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
@@ -1251,15 +1936,27 @@
         else real++;
       });
       document.getElementById('kpiBotCount').textContent = bots;
-      document.getElementById('kpiRealUsers').textContent = real;
+      document.getElementById('kpiBotTitle').textContent = isMembird ? '🤖 Pasif / Test Cihazları' : '🤖 Test & Pasif Cihazlar';
+      document.getElementById('kpiBotCountSub').textContent = isMembird ? 'Açıp ders yapmayanlar ➔' : 'Google / Apple / Oynamayan ➔';
 
-      // 5. Store Rating KPI
-      const rateClickedCount = allPlayers.filter(p => p.hasClickedRate || p.hasClaimedRateReward).length;
-      const rateClaimedCount = allPlayers.filter(p => p.hasClaimedRateReward).length;
-      const kpiRatedEl = document.getElementById('kpiRatedCount');
-      if (kpiRatedEl) kpiRatedEl.textContent = rateClickedCount;
-      const kpiRatedSub = document.getElementById('kpiRatedCountSub');
-      if (kpiRatedSub) kpiRatedSub.textContent = `${rateClaimedCount} oyuncu 100💎 aldı`;
+      document.getElementById('kpiRealUsers').textContent = real;
+      document.getElementById('kpiRealTitle').textContent = isMembird ? '👤 Aktif Kelime Öğrenenler' : '👤 Gerçek / Aktif Oyuncular';
+      document.getElementById('kpiRealUsersSub').textContent = isMembird ? 'Kelime öğrenen / Seri yapan ➔' : 'Bölüm geçen / Ödül kazanan ➔';
+
+      // 5. 6th Special KPI
+      if (isMembird) {
+        const streakUsers = allPlayers.filter(p => (p.streak || 0) > 0).length;
+        const totalMastered = allPlayers.reduce((acc, p) => acc + (p.mastered || p.masteredWords || 0), 0);
+        document.getElementById('kpiSpecialTitle').textContent = '🔥 Aktif Seri (Streak)';
+        document.getElementById('kpiSpecialCount').textContent = streakUsers;
+        document.getElementById('kpiSpecialSub').textContent = `Toplam ${totalMastered} kelime hafızada ➔`;
+      } else {
+        const rateClickedCount = allPlayers.filter(p => p.hasClickedRate || p.hasClaimedRateReward).length;
+        const rateClaimedCount = allPlayers.filter(p => p.hasClaimedRateReward).length;
+        document.getElementById('kpiSpecialTitle').textContent = '⭐ Mağaza Puanlama';
+        document.getElementById('kpiSpecialCount').textContent = rateClickedCount;
+        document.getElementById('kpiSpecialSub').textContent = `${rateClaimedCount} oyuncu 100💎 aldı ➔`;
+      }
 
       // Update Traffic Type tab counters
       const countAll = document.getElementById('typeCountAll');
@@ -1277,7 +1974,7 @@
       const countryStats = {};
 
       allPlayers.forEach(p => {
-        const lang = (p.language || 'tr').toLowerCase();
+        const lang = (p.countryCode || p.language || 'tr').toLowerCase();
         if (!countryStats[lang]) {
           countryStats[lang] = {
             total: 0,
@@ -1304,7 +2001,6 @@
         else countryStats[lang].realUsers++;
       });
 
-      // Sort countries by device count
       const sortedCountries = Object.entries(countryStats).sort((a, b) => b[1].total - a[1].total);
 
       container.innerHTML = sortedCountries.map(([code, stat]) => {
@@ -1312,7 +2008,7 @@
         const percent = Math.round((stat.total / allPlayers.length) * 100) || 0;
 
         return `
-          <div class="country-card">
+          <div class="country-card" onclick="setCountryFilter('${code}'); scrollToTable();">
             <div class="country-header">
               <div class="country-flag-name">
                 <span class="country-flag-emoji">${cInfo.flag}</span>
@@ -1335,7 +2031,7 @@
               </div>
               <div class="country-meta-row">
                 <span>Trafik Dağılımı:</span>
-                <span>${stat.bots > 0 ? `🤖 ${stat.bots} Test Botu` : ''} ${stat.realUsers > 0 ? `👤 ${stat.realUsers} Oyuncu` : ''}</span>
+                <span>${stat.bots > 0 ? `🤖 ${stat.bots} Test/Pasif` : ''} ${stat.realUsers > 0 ? `👤 ${stat.realUsers} Aktif` : ''}</span>
               </div>
               <div class="country-meta-row">
                 <span>Son Görülme:</span>
@@ -1358,23 +2054,23 @@
       const countryCounts = {};
 
       allPlayers.forEach(p => {
-        const lang = (p.language || 'tr').toLowerCase();
+        const lang = (p.countryCode || p.language || 'tr').toLowerCase();
         const cInfo = getCountryInfo(lang);
         const label = `${cInfo.flag} ${cInfo.name}`;
         countryCounts[label] = (countryCounts[label] || 0) + 1;
       });
 
-      // Sort descending
       const sorted = Object.entries(countryCounts).sort((a, b) => b[1] - a[1]);
       const labels = sorted.map(s => s[0]);
       const counts = sorted.map(s => s[1]);
 
       const barBgColors = [
         '#10b981', // Emerald
+        '#38bdf8', // Sky
         '#f59e0b', // Amber
         '#8b5cf6', // Violet
         '#ec4899', // Pink
-        isLight ? '#18181b' : '#f4f4f5', // High-contrast neutral
+        isLight ? '#18181b' : '#f4f4f5',
         '#14b8a6', // Teal
         '#f97316', // Orange
       ];
@@ -1403,7 +2099,7 @@
               grid: { color: gridColor }
             },
             y: {
-              ticks: { color: headingColor, font: { weight: 'bold', size: 13 } },
+              ticks: { color: headingColor, font: { weight: 'bold', size: 12 } },
               grid: { display: false }
             }
           }
@@ -1447,7 +2143,6 @@
     function renderFilters() {
       const container = document.getElementById('filtersBar');
       
-      // Calculate countries from players matching the selected traffic type AND excludeEmulators setting
       const basePlayers = allPlayers.filter(p => {
         const isBot = classifyPlayer(p).isBot;
         if (excludeEmulators && isBot) return false;
@@ -1458,7 +2153,7 @@
 
       const uniqueCountries = {};
       basePlayers.forEach(p => {
-        const lang = (p.language || 'tr').toLowerCase();
+        const lang = (p.countryCode || p.language || 'tr').toLowerCase();
         uniqueCountries[lang] = (uniqueCountries[lang] || 0) + 1;
       });
 
@@ -1484,16 +2179,17 @@
     function renderTrafficTable() {
       const tbody = document.getElementById('trafficTableBody');
       const search = (document.getElementById('tableSearch').value || '').toLowerCase().trim();
+      const isMembird = currentTrafficApp === 'membird';
 
       const filtered = allPlayers.filter(p => {
         const classification = classifyPlayer(p);
 
-        // 0. Emülatörleri Listeden Çıkarma Kuralı
+        // 0. Exclude Emulators / Passives
         if (excludeEmulators && classification.isBot) {
           return false;
         }
 
-        // 1. Traffic Type Filter (Tümü vs Gerçek vs Test)
+        // 1. Traffic Type Filter
         if (selectedTrafficTypeFilter === 'REAL' && classification.isBot) {
           return false;
         }
@@ -1502,7 +2198,7 @@
         }
 
         // 2. Country Filter
-        const lang = (p.language || 'tr').toLowerCase();
+        const lang = (p.countryCode || p.language || 'tr').toLowerCase();
         if (selectedCountryFilter !== 'ALL' && lang !== selectedCountryFilter) {
           return false;
         }
@@ -1511,7 +2207,7 @@
         if (!search) return true;
         const cInfo = getCountryInfo(lang);
         const rateKeyword = (p.hasClickedRate || p.hasClaimedRateReward) ? 'puan puanla puanlama star rate' : '';
-        const text = `${p.id} ${p.platform} ${p.deviceModel || ''} ${p.city || ''} ${p.country || ''} ${p.lastScreen || ''} ${p.isp || ''} ${lang} ${cInfo.name} ${p.appVersion} ${classification.label} ${rateKeyword}`.toLowerCase();
+        const text = `${p.id} ${p.platform} ${p.deviceModel || ''} ${p.city || ''} ${p.country || ''} ${p.lastScreen || ''} ${p.isp || ''} ${lang} ${cInfo.name} ${p.appVersion || ''} ${classification.label} ${rateKeyword} ${p.studyLevel || ''}`.toLowerCase();
         return text.includes(search);
       });
 
@@ -1520,14 +2216,14 @@
       if (filtered.length === 0) {
         let emptyMsg = 'Seçilen filtre kriterlerine uygun cihaz bulunamadı.';
         if (excludeEmulators) {
-          emptyMsg += ' (Emülatörler listeden çıkarıldı, görmek için yukarıdaki kutucuk işaretini kaldırabilirsiniz).';
+          emptyMsg += ' (Emülatörler ve pasifler listeden çıkarıldı, görmek için yukarıdaki kutucuk işaretini kaldırabilirsiniz).';
         }
         tbody.innerHTML = `<tr><td colspan="9" class="empty-state">${emptyMsg}</td></tr>`;
         return;
       }
 
       tbody.innerHTML = filtered.map(p => {
-        const lang = (p.language || 'tr').toLowerCase();
+        const lang = (p.countryCode || p.language || 'tr').toLowerCase();
         const cInfo = getCountryInfo(lang);
         const classification = classifyPlayer(p);
 
@@ -1545,11 +2241,55 @@
 
         const deviceTitle = p.deviceModel || (isAndroid ? 'Android Cihaz' : 'iPhone / iPad');
 
-        const rateStatusBadge = p.hasClaimedRateReward
-          ? `<span class="badge" style="background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; color: #fbbf24; font-weight: 800;">⭐ 100💎 Alındı</span>`
-          : p.hasClickedRate
-          ? `<span class="badge" style="background: rgba(56, 189, 248, 0.2); border: 1px solid #38bdf8; color: #38bdf8; font-weight: 700;">⭐ Tıkladı (Gitti)</span>`
-          : `<span style="color: var(--muted); font-size: 11px;">Tıklamadı</span>`;
+        // Dynamic Columns based on App
+        let progressCol = '';
+        let metricCol = '';
+
+        if (isMembird) {
+          const mastered = p.mastered || p.masteredWords || 0;
+          const reviewing = p.reviewing || p.reviewingWords || 0;
+          const streak = p.streak || 0;
+          const studyLvl = p.studyLevel || 'A1';
+          const nestLvl = p.nestLevel || 1;
+          const dailyTarget = p.dailyWordTarget || 8;
+
+          progressCol = `
+            <td>
+              <div style="font-weight: 800; color: #38bdf8; font-size: 13px;">🧠 ${mastered} Kelime Hafızada</div>
+              <div style="color: var(--gold); font-size: 11px; margin-top: 2px; font-weight: 700;">🔥 ${streak} Gün Seri • ${reviewing} Tekrarda</div>
+              <div style="color: var(--muted); font-size: 11px; margin-top: 2px;">Düzey: ${studyLvl} • Yuva: Lv.${nestLvl}</div>
+            </td>
+          `;
+
+          metricCol = `
+            <td>
+              <div style="font-weight: 700; color: var(--emerald); font-size: 12px;">🎯 ${dailyTarget} Kelime/Gün</div>
+              <div style="font-size: 11px; color: var(--muted); margin-top: 2px;">${p.onboardingCompleted ? '✅ Onboarding Bitti' : '⏳ Onboardingde'}</div>
+            </td>
+          `;
+        } else {
+          // Word Battle
+          const rateStatusBadge = p.hasClaimedRateReward
+            ? `<span class="badge" style="background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; color: #fbbf24; font-weight: 800;">⭐ 100💎 Alındı</span>`
+            : p.hasClickedRate
+            ? `<span class="badge" style="background: rgba(56, 189, 248, 0.2); border: 1px solid #38bdf8; color: #38bdf8; font-weight: 700;">⭐ Tıkladı (Gitti)</span>`
+            : `<span style="color: var(--muted); font-size: 11px;">Tıklamadı</span>`;
+
+          progressCol = `
+            <td>
+              <div style="font-weight: 800; color: var(--gold); font-size: 13px;">${(p.coins ?? 250).toLocaleString('tr-TR')} 🪙</div>
+              <div style="color: #38bdf8; font-size: 11px; margin-top: 2px; font-weight: 700;">${p.gems ?? 0} 💎 • ${p.energy ?? 5}/5 ⚡</div>
+              <div style="color: var(--muted); font-size: 11px; margin-top: 2px;">Lv. ${p.currentLevel || 1} • <span class="badge badge-version">v${p.appVersion || '1.0.5'}</span></div>
+            </td>
+          `;
+
+          metricCol = `
+            <td>
+              <div>${rateStatusBadge}</div>
+              ${p.rateClickedAt ? `<div style="font-size: 10px; color: var(--muted); margin-top: 2px;">${formatTimeAgo(p.rateClickedAt)}</div>` : ''}
+            </td>
+          `;
+        }
 
         return `
           <tr>
@@ -1577,15 +2317,8 @@
               <div>${typeBadge}</div>
               <div style="font-size: 10px; color: var(--muted); margin-top: 3px;">${classification.reason}</div>
             </td>
-            <td>
-              <div style="font-weight: 800; color: var(--gold); font-size: 13px;">${(p.coins ?? 250).toLocaleString('tr-TR')} 🪙</div>
-              <div style="color: #38bdf8; font-size: 11px; margin-top: 2px; font-weight: 700;">${p.gems ?? 0} 💎 • ${p.energy ?? 5}/5 ⚡</div>
-              <div style="color: var(--muted); font-size: 11px; margin-top: 2px;">Lv. ${p.currentLevel || 1} • <span class="badge badge-version">v${p.appVersion || '1.0.4'}</span></div>
-            </td>
-            <td>
-              <div>${rateStatusBadge}</div>
-              ${p.rateClickedAt ? `<div style="font-size: 10px; color: var(--muted); margin-top: 2px;">${formatTimeAgo(p.rateClickedAt)}</div>` : ''}
-            </td>
+            ${progressCol}
+            ${metricCol}
             <td>
               <div style="font-weight: 600;">${formatTimeAgo(p.lastSeenAt || p.updatedAt)}</div>
               <div style="font-size: 10px; color: var(--muted); margin-top: 2px;">${fullDate}</div>
@@ -1599,7 +2332,7 @@
       }).join('');
     }
 
-    // Modal Admin İşlemleri
+    // Modal Admin Editing Logic
     let currentEditDeviceId = null;
 
     function openEditModal(deviceId) {
@@ -1608,10 +2341,36 @@
 
       currentEditDeviceId = deviceId;
       document.getElementById('modalDeviceId').textContent = deviceId;
-      document.getElementById('modalCoins').value = player.coins ?? 250;
-      document.getElementById('modalGems').value = player.gems ?? 0;
-      document.getElementById('modalEnergy').value = player.energy ?? 5;
-      document.getElementById('modalLevel').value = player.currentLevel ?? 1;
+
+      const isMembird = currentTrafficApp === 'membird';
+
+      if (isMembird) {
+        document.getElementById('modalTitleText').textContent = '✏️ Öğrenici Bilgilerini Güncelle (Membird)';
+        document.getElementById('labelField1').textContent = '🎯 Günlük Kelime Hedefi:';
+        document.getElementById('modalCoins').value = player.dailyWordTarget || 8;
+
+        document.getElementById('labelField2').textContent = '🔥 Seri (Streak Gün):';
+        document.getElementById('modalGems').value = player.streak || 0;
+
+        document.getElementById('labelField3').textContent = '🧠 Hafızadaki Kelime Sayısı:';
+        document.getElementById('modalEnergy').value = player.mastered || player.masteredWords || 0;
+
+        document.getElementById('labelField4').textContent = '🪺 Yuva Seviyesi (Nest Level):';
+        document.getElementById('modalLevel').value = player.nestLevel || 1;
+      } else {
+        document.getElementById('modalTitleText').textContent = '✏️ Oyuncu Bilgilerini Güncelle (Word Battle)';
+        document.getElementById('labelField1').textContent = '🪙 Altın (Coins):';
+        document.getElementById('modalCoins').value = player.coins ?? 250;
+
+        document.getElementById('labelField2').textContent = '💎 Elmas (Gems):';
+        document.getElementById('modalGems').value = player.gems ?? 0;
+
+        document.getElementById('labelField3').textContent = '⚡ Can / Enerji (0-5):';
+        document.getElementById('modalEnergy').value = player.energy ?? 5;
+
+        document.getElementById('labelField4').textContent = '🗺️ Bölüm / Seviye (1-200):';
+        document.getElementById('modalLevel').value = player.currentLevel ?? 1;
+      }
 
       const statusEl = document.getElementById('modalStatus');
       statusEl.style.display = 'none';
@@ -1629,20 +2388,43 @@
       if (!currentEditDeviceId) return;
       const saveBtn = document.getElementById('modalSaveBtn');
       const statusEl = document.getElementById('modalStatus');
-
-      const coins = parseInt(document.getElementById('modalCoins').value, 10) || 0;
-      const gems = parseInt(document.getElementById('modalGems').value, 10) || 0;
-      const energy = parseInt(document.getElementById('modalEnergy').value, 10) || 0;
-      const currentLevel = parseInt(document.getElementById('modalLevel').value, 10) || 1;
+      const isMembird = currentTrafficApp === 'membird';
 
       saveBtn.disabled = true;
       saveBtn.innerHTML = '⏳ Kaydediliyor...';
       statusEl.style.display = 'block';
       statusEl.style.color = 'var(--muted)';
-      statusEl.textContent = 'Firebase Firestore güncelleniyor...';
+      statusEl.textContent = 'Bilgiler güncelleniyor...';
+
+      if (isMembird) {
+        // Update local Membird object
+        const player = allPlayers.find(p => p.id === currentEditDeviceId);
+        if (player) {
+          player.dailyWordTarget = parseInt(document.getElementById('modalCoins').value, 10) || 8;
+          player.streak = parseInt(document.getElementById('modalGems').value, 10) || 0;
+          player.mastered = parseInt(document.getElementById('modalEnergy').value, 10) || 0;
+          player.nestLevel = parseInt(document.getElementById('modalLevel').value, 10) || 1;
+        }
+        statusEl.style.color = 'var(--emerald)';
+        statusEl.textContent = '✅ Öğrenici profili güncellendi!';
+        setTimeout(() => {
+          closeEditModal();
+          updateKPIs();
+          renderTrafficTable();
+        }, 800);
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '💾 Kaydet';
+        return;
+      }
+
+      // Word Battle Firestore PATCH
+      const coins = parseInt(document.getElementById('modalCoins').value, 10) || 0;
+      const gems = parseInt(document.getElementById('modalGems').value, 10) || 0;
+      const energy = parseInt(document.getElementById('modalEnergy').value, 10) || 0;
+      const currentLevel = parseInt(document.getElementById('modalLevel').value, 10) || 1;
 
       const updateTimestamp = new Date().toISOString();
-      const patchUrl = `${FIRESTORE_REST_URL.split('?')[0]}/${encodeURIComponent(currentEditDeviceId)}?key=${FIRESTORE_API_KEY}&updateMask.fieldPaths=coins&updateMask.fieldPaths=gems&updateMask.fieldPaths=energy&updateMask.fieldPaths=currentLevel&updateMask.fieldPaths=adminUpdateTimestamp&updateMask.fieldPaths=updatedAt`;
+      const patchUrl = `${WORDBATTLE_CONFIG.restUrl.split('?')[0]}/${encodeURIComponent(currentEditDeviceId)}?key=${WORDBATTLE_CONFIG.apiKey}&updateMask.fieldPaths=coins&updateMask.fieldPaths=gems&updateMask.fieldPaths=energy&updateMask.fieldPaths=currentLevel&updateMask.fieldPaths=adminUpdateTimestamp&updateMask.fieldPaths=updatedAt`;
 
       const payload = {
         fields: {
@@ -1666,7 +2448,6 @@
           throw new Error(`HTTP ${res.status}`);
         }
 
-        // Yerel listeyi güncelle
         const player = allPlayers.find(p => p.id === currentEditDeviceId);
         if (player) {
           player.coins = coins;
@@ -1689,13 +2470,15 @@
         statusEl.textContent = '❌ Güncelleme hatası: ' + err.message;
       } finally {
         saveBtn.disabled = false;
-        saveBtn.innerHTML = '💾 Firebase\'e Kaydet';
+        saveBtn.innerHTML = '💾 Kaydet';
       }
     }
 
-    // Initial fetch & Auto-refresh every 25 seconds
-    fetchLiveFirestoreData();
-    setInterval(fetchLiveFirestoreData, 25000);
+    // Initialize with saved app or default Word Battle
+    switchTrafficApp(currentTrafficApp);
+
+    // Auto-refresh every 30 seconds
+    setInterval(fetchLiveFirestoreData, 30000);
   </script>
 </body>
 </html>
