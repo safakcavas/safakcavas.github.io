@@ -1710,24 +1710,18 @@
         const isp = (player.isp || '').toLowerCase();
         const isEmulatorModel = /emulator|sdk|generic|vbox|goldfish|ranchu|cuttlefish|simulator/i.test(model);
         const isDataCenter = /google|amazon|cloud|datacenter/i.test(isp);
+        const isHardwareBot = isEmulatorExplicit || isEmulatorModel || isDataCenter;
         const mastered = player.mastered || player.masteredWords || 0;
         const streak = player.streak || 0;
-        const isPassive = (!player.onboardingCompleted && mastered === 0 && streak === 0);
+        const updatedTimestamp = new Date(player.lastSeenAt || player.updatedAt || 0).getTime();
+        const isRecent24h = (Date.now() - updatedTimestamp) < (24 * 60 * 60 * 1000);
 
-        const isBot = isEmulatorExplicit || isEmulatorModel || isDataCenter || isPassive;
-
-        if (isBot) {
-          let reason = 'Onboarding Başında Kaldı / İlerleme Yok';
-          let label = '🤖 Test / Pasif Cihaz';
-          if (isEmulatorExplicit || isEmulatorModel) {
-            reason = `Emülatör Donanımı (${player.deviceModel || 'SDK'})`;
-            label = '🤖 Donanım Emülatörü';
-          } else if (isDataCenter) {
+        if (isHardwareBot) {
+          let reason = `Emülatör Donanımı (${player.deviceModel || 'SDK'})`;
+          let label = '🤖 Donanım Emülatörü';
+          if (isDataCenter) {
             reason = `Bulut Veri Merkezi ISP (${player.isp})`;
             label = '☁️ Bulut Test Sunucusu';
-          } else if (isPassive) {
-            reason = 'Açıp Bırakılmış (0 Kelime / 0 Seri / Onboarding Yapılmamış)';
-            label = '⏸️ Pasif Kullanıcı';
           }
           return {
             type: 'bot_google',
@@ -1735,6 +1729,28 @@
             badgeClass: 'badge-bot',
             reason,
             isBot: true,
+          };
+        }
+
+        const isPassiveUntouched = (!player.onboardingCompleted && mastered === 0 && streak === 0);
+
+        if (isPassiveUntouched && !isRecent24h) {
+          return {
+            type: 'bot_google',
+            label: '⏸️ Pasif Cihaz',
+            badgeClass: 'badge-bot',
+            reason: 'Eski Açılış / Onboarding Yapılmamış (0 Kelime / 0 Seri)',
+            isBot: true,
+          };
+        }
+
+        if ((mastered === 0 && streak === 0) && isRecent24h) {
+          return {
+            type: 'real_active',
+            label: '🆕 Yeni İndirme / Başlangıç',
+            badgeClass: 'badge-user',
+            reason: player.onboardingCompleted ? 'Onboarding tamamlandı (İlk derse hazırlanıyor)' : 'Bugün Açıldı (Onboarding aşamasında)',
+            isBot: false,
           };
         }
 
@@ -1863,7 +1879,6 @@
 
           const data = await response.json();
           const rawDocs = data.documents || [];
-          if (rawDocs.length === 0) throw new Error('EMPTY_DOCS');
 
           allPlayers = rawDocs.map(parseFirestoreDoc).map(p => {
             if (p.profile && typeof p.profile === 'object') {
@@ -1877,11 +1892,7 @@
           lastSyncText.textContent = `Membird Canlı: ${allPlayers.length} Cihaz (${now.toLocaleTimeString('tr-TR')})`;
         } catch (err) {
           const is403 = String(err.message || '').includes('403');
-          if (is403 || String(err.message || '').includes('EMPTY_DOCS')) {
-            if (noticeBanner) noticeBanner.style.display = 'flex';
-          } else {
-            if (noticeBanner) noticeBanner.style.display = 'none';
-          }
+          if (noticeBanner) noticeBanner.style.display = is403 ? 'flex' : 'none';
           allPlayers = JSON.parse(JSON.stringify(MEMBIRD_VERIFIED_DATA));
           const now = new Date();
           lastSyncText.textContent = `Membird Örnek Telemetri (${allPlayers.length} Cihaz • ${now.toLocaleTimeString('tr-TR')})`;
