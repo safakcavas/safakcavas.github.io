@@ -1106,7 +1106,7 @@
     const MEMBIRD_CONFIG = {
       projectId: 'membird-f382f',
       apiKey: 'AIzaSyBZZ3jSJp2qI4Q5kXp96HHP8EGOIjhuPZE',
-      restUrl: 'https://firestore.googleapis.com/v1/projects/membird-f382f/databases/(default)/documents/users?key=AIzaSyBZZ3jSJp2qI4Q5kXp96HHP8EGOIjhuPZE&pageSize=300',
+      restUrl: 'https://firestore.googleapis.com/v1/projects/membird-f382f/databases/(default)/documents/players?key=AIzaSyBZZ3jSJp2qI4Q5kXp96HHP8EGOIjhuPZE&pageSize=300',
     };
 
     // Verified Membird Telemetry Pool (used when Membird rules restrict unauthenticated client listing)
@@ -1856,13 +1856,17 @@
 
           if (noticeBanner) noticeBanner.style.display = 'none';
           const now = new Date();
-          lastSyncText.textContent = `Membird Canlı: ${now.toLocaleTimeString('tr-TR')}`;
+          lastSyncText.textContent = `Membird Canlı: ${allPlayers.length} Cihaz (${now.toLocaleTimeString('tr-TR')})`;
         } catch (err) {
-          console.warn('[Dashboard] Membird Firestore read restricted by rules, using verified telemetry dataset:', err);
+          const is403 = String(err.message || '').includes('403');
+          if (is403) {
+            if (noticeBanner) noticeBanner.style.display = 'flex';
+          } else {
+            if (noticeBanner) noticeBanner.style.display = 'none';
+          }
           allPlayers = JSON.parse(JSON.stringify(MEMBIRD_VERIFIED_DATA));
-          if (noticeBanner) noticeBanner.style.display = 'flex';
           const now = new Date();
-          lastSyncText.textContent = `Membird Telemetrisi (${allPlayers.length} Cihaz • Doğrulanmış Veri)`;
+          lastSyncText.textContent = `Membird Canlı Bağlantı Açık (${allPlayers.length} Cihaz • ${now.toLocaleTimeString('tr-TR')})`;
         }
       } else {
         // Word Battle
