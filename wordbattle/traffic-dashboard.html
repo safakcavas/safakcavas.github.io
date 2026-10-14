@@ -880,10 +880,10 @@
       <div class="notice-body">
         <div class="notice-title">Membird Firestore İzin Notu & Doğrulanmış Telemetri</div>
         <p class="notice-text">
-          Membird'in <code>firestore.rules</code> dosyasında kullanıcı koleksiyonu yalnızca kullanıcının kendi verisini okumasına (<code>request.auth.uid == userId</code>) izin vermektedir. Web konsolunun tüm cihazları doğrudan canlı listelemesi için Firebase Console -> Firestore Database -> Rules sekmesinden read kuralını açabilirsiniz. Şimdilik doğrulanmış Membird kullanıcı & cihaz akışı telemetrisi gösterilmektedir.
+          Membird'in <code>firestore.rules</code> dosyasında <code>players</code> koleksiyonu izni henüz Firebase konsolunda yayınlanmamış olabilir. Canlı cihaz akışını doğrudan görmek için Firebase Console -> Firestore Database -> Rules sekmesinde kuralı ekleyip Publish diyebilirsiniz:
         </p>
         <div class="notice-actions">
-          <code style="background: var(--code-bg); padding: 4px 8px; border-radius: 6px; font-size: 11px; border: 1px solid var(--card-border);">match /users/{userId}/{document=**} { allow read: if true; }</code>
+          <code style="background: var(--code-bg); padding: 4px 8px; border-radius: 6px; font-size: 11px; border: 1px solid var(--card-border);">match /players/{deviceId} { allow read, write: if true; }</code>
           <button class="btn" style="padding: 4px 10px; font-size: 11px;" onclick="copyMembirdRule()">📋 Kuralı Kopyala</button>
         </div>
       </div>
@@ -1100,13 +1100,13 @@
     const WORDBATTLE_CONFIG = {
       projectId: 'word-battle-f32a6',
       apiKey: 'AIzaSyARH2gB5hiLZYhLXBEO7SfgeUt6FXwoB0c',
-      restUrl: 'https://firestore.googleapis.com/v1/projects/word-battle-f32a6/databases/(default)/documents/players?key=AIzaSyARH2gB5hiLZYhLXBEO7SfgeUt6FXwoB0c&pageSize=300',
+      restUrl: 'https://firestore.googleapis.com/v1/projects/word-battle-f32a6/databases/(default)/documents/players?key=AIzaSyARH2gB5hiLZYhLXBEO7SfgeUt6FXwoB0c&pageSize=500',
     };
 
     const MEMBIRD_CONFIG = {
       projectId: 'membird-f382f',
       apiKey: 'AIzaSyBZZ3jSJp2qI4Q5kXp96HHP8EGOIjhuPZE',
-      restUrl: 'https://firestore.googleapis.com/v1/projects/membird-f382f/databases/(default)/documents/players?key=AIzaSyBZZ3jSJp2qI4Q5kXp96HHP8EGOIjhuPZE&pageSize=300',
+      restUrl: 'https://firestore.googleapis.com/v1/projects/membird-f382f/databases/(default)/documents/players?key=AIzaSyBZZ3jSJp2qI4Q5kXp96HHP8EGOIjhuPZE&pageSize=500',
     };
 
     // Verified Membird Telemetry Pool (used when Membird rules restrict unauthenticated client listing)
@@ -1567,7 +1567,7 @@
     }
 
     function copyMembirdRule() {
-      const rule = 'match /users/{userId}/{document=**} { allow read: if true; }';
+      const rule = 'match /players/{deviceId} { allow read, write: if true; }';
       navigator.clipboard.writeText(rule).then(() => {
         alert('Kural panoya kopyalandı!\n\nFirebase Console -> Firestore Database -> Rules sekmesine yapıştırıp Publish diyebilirsiniz.');
       }).catch(() => {
@@ -1759,34 +1759,44 @@
       const isEmulatorModel = /emulator|sdk|generic|vbox|goldfish|ranchu|cuttlefish/i.test(model);
       const isDataCenter = /google|amazon|cloud|datacenter/i.test(isp);
 
-      const isBot = isEmulatorExplicit || isEmulatorModel || isDataCenter || isUntouched;
+      const isHardwareBot = isEmulatorExplicit || isEmulatorModel || isDataCenter;
+      const updatedTimestamp = new Date(player.lastSeenAt || player.updatedAt || 0).getTime();
+      const isRecent24h = (Date.now() - updatedTimestamp) < (24 * 60 * 60 * 1000);
 
-      if (isBot) {
-        const isIOS = (player.platform || '').toLowerCase().includes('ios') || (player.platform || '').toLowerCase().includes('iphone');
-        let reason = isIOS ? 'Apple İnceleme / Açıp Oynamamış' : 'Google Robo-test / Açıp Oynamamış';
-        let label = '🤖 Test / Pasif Cihaz';
-        if (isEmulatorExplicit || isEmulatorModel) {
-          reason = `Emülatör Donanımı (${player.deviceModel || 'x86 SDK'})`;
-          label = '🤖 Donanım Emülatörü';
-        } else if (isDataCenter) {
+      if (isHardwareBot) {
+        let reason = `Emülatör Donanımı (${player.deviceModel || 'x86 SDK'})`;
+        let label = '🤖 Donanım Emülatörü';
+        if (isDataCenter) {
           reason = `Bulut Veri Merkezi ISP (${player.isp})`;
           label = '☁️ Bulut Test Sunucusu';
-        } else if (isUntouched) {
-          if (isIOS) {
-            reason = 'Apple İnceleme Ekibi / Pasif (Dokunulmamış: 250🪙 / Lv. 1)';
-            label = '🍎 Apple Test / Pasif';
-          } else {
-            reason = 'Google Robo-test / Pasif (Dokunulmamış: 250🪙 / Lv. 1)';
-            label = '🤖 Play Store Botu / Pasif';
-          }
         }
-
         return {
           type: 'bot_google',
           label,
           badgeClass: 'badge-bot',
           reason,
           isBot: true,
+        };
+      }
+
+      if (isUntouched && !isRecent24h) {
+        const isIOS = (player.platform || '').toLowerCase().includes('ios') || (player.platform || '').toLowerCase().includes('iphone');
+        return {
+          type: 'bot_google',
+          label: isIOS ? '🍎 Apple Test / Pasif' : '🤖 Play Store Botu / Pasif',
+          badgeClass: 'badge-bot',
+          reason: isIOS ? 'Apple İnceleme / Açıp Oynamamış (250🪙 / Lv. 1)' : 'Eski Test / Dokunulmamış (250🪙 / Lv. 1)',
+          isBot: true,
+        };
+      }
+
+      if (isUntouched && isRecent24h) {
+        return {
+          type: 'real_active',
+          label: '🆕 Yeni İndirme / Oyuncu',
+          badgeClass: 'badge-user',
+          reason: 'Bugün Açıldı • 250🪙 / Lv. 1 (İlk maça hazırlanıyor)',
+          isBot: false,
         };
       }
 
@@ -1832,11 +1842,19 @@
       refreshBtn.innerHTML = '⏳ Çekiliyor...';
       lastSyncText.textContent = 'Veriler alınıyor...';
 
+      const cacheBustKey = `&_cb=${Date.now()}`;
+      const fetchHeaders = {
+        'Accept': 'application/json',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+      };
+
       if (currentTrafficApp === 'membird') {
         try {
-          const response = await fetch(MEMBIRD_CONFIG.restUrl, {
+          const response = await fetch(MEMBIRD_CONFIG.restUrl + cacheBustKey, {
             method: 'GET',
-            headers: { 'Accept': 'application/json' },
+            cache: 'no-store',
+            headers: fetchHeaders,
           });
 
           if (!response.ok) {
@@ -1859,22 +1877,23 @@
           lastSyncText.textContent = `Membird Canlı: ${allPlayers.length} Cihaz (${now.toLocaleTimeString('tr-TR')})`;
         } catch (err) {
           const is403 = String(err.message || '').includes('403');
-          if (is403) {
+          if (is403 || String(err.message || '').includes('EMPTY_DOCS')) {
             if (noticeBanner) noticeBanner.style.display = 'flex';
           } else {
             if (noticeBanner) noticeBanner.style.display = 'none';
           }
           allPlayers = JSON.parse(JSON.stringify(MEMBIRD_VERIFIED_DATA));
           const now = new Date();
-          lastSyncText.textContent = `Membird Canlı Bağlantı Açık (${allPlayers.length} Cihaz • ${now.toLocaleTimeString('tr-TR')})`;
+          lastSyncText.textContent = `Membird Örnek Telemetri (${allPlayers.length} Cihaz • ${now.toLocaleTimeString('tr-TR')})`;
         }
       } else {
         // Word Battle
         if (noticeBanner) noticeBanner.style.display = 'none';
         try {
-          const response = await fetch(WORDBATTLE_CONFIG.restUrl, {
+          const response = await fetch(WORDBATTLE_CONFIG.restUrl + cacheBustKey, {
             method: 'GET',
-            headers: { 'Accept': 'application/json' },
+            cache: 'no-store',
+            headers: fetchHeaders,
           });
 
           if (!response.ok) {
@@ -1886,7 +1905,7 @@
           allPlayers = rawDocs.map(parseFirestoreDoc);
 
           const now = new Date();
-          lastSyncText.textContent = `Word Battle Canlı: ${now.toLocaleTimeString('tr-TR')}`;
+          lastSyncText.textContent = `Word Battle Canlı: ${allPlayers.length} Cihaz (${now.toLocaleTimeString('tr-TR')})`;
         } catch (err) {
           console.error('[Dashboard] Error:', err);
           lastSyncText.textContent = 'Bağlantı hatası!';
