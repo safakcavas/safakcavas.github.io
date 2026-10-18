@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gizlilik Politikası (Privacy Policy) - Hospital Shift</title>
+  <link rel="icon" type="image/png" href="../assets/icon.png">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: rgba(22, 27, 34, 0.85);
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.25);
+      --accent-blue: #38bdf8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      background-image: radial-gradient(circle at 50% 0%, #132420 0%, #0b0f19 75%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.65;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: rgba(13, 17, 23, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 1.15rem;
+    }
+    .brand-badge {
+      background: var(--accent);
+      color: #042f1a;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .lang-switch {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .lang-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .lang-btn.active {
+      background: var(--accent);
+      color: #042f1a;
+      border-color: var(--accent);
+    }
+    main {
+      flex: 1;
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      width: 100%;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2.25rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      margin-bottom: 2rem;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #fff 0%, #a7f3d0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .date-meta {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.75rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+    }
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent-blue);
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+    }
+    p, li {
+      color: #cbd5e1;
+      margin-bottom: 0.85rem;
+      font-size: 1rem;
+    }
+    ul {
+      margin-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+    }
+    a {
+      color: var(--accent-blue);
+      text-decoration: underline;
+    }
+    .highlight-box {
+      background: rgba(16, 185, 129, 0.08);
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.25rem 0;
+    }
+    .contact-card {
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 1.25rem;
+      border-radius: 8px;
+      margin-top: 1.5rem;
+    }
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    .section-en { display: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-container">
+      <a href="#" class="brand">
+        <span class="brand-badge">Game</span>
+        Hospital Shift
+      </a>
+      <div class="lang-switch">
+        <button class="lang-btn active" id="btn-tr" onclick="showLang('tr')">Türkçe</button>
+        <button class="lang-btn" id="btn-en" onclick="showLang('en')">English</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- TÜRKÇE BÖLÜM -->
+    <article id="lang-tr" class="card">
+      <h1>Hospital Shift — Gizlilik Politikası</h1>
+      <div class="date-meta">Son Güncelleme: 18 Ekim 2026</div>
+
+      <div class="highlight-box">
+        <strong>Özet:</strong> Hospital Shift, kullanıcı gizliliğine tam saygı duyar. Sizden hesap açmanızı, adınızı, e-postanızı, telefonunuzu veya hassas kişisel bilgilerinizi istemeyiz. Oyun ilerlemeniz cihazınızda saklanır.
+      </div>
+
+      <h2>1. Toplanan Bilgiler ve Veri Güvenliği</h2>
+      <ul>
+        <li><strong>Hesap ve Kişisel Bilgi Yok:</strong> Hospital Shift'i oynamak için hesap açmanız gerekmez. Ad, soyad, e-posta, telefon numarası veya konum bilgisi toplanmaz ve saklanmaz.</li>
+        <li><strong>Kayıt ve İlerleme Verileri (Yerel Depolama):</strong> Oyun kayıtlarınız, tamamlanan vardiyalarınız ve ayarlarınız yalnızca cihazınızın yerel depolama alanında (<code>AsyncStorage</code>) tutulur. Bu veriler harici herhangi bir sunucuya aktarılmaz.</li>
+        <li><strong>Kullanıcı İsteğine Bağlı Anonim Analitik (Opt-in):</strong> Uygulama ilk açılışta tamamen analitiksiz çalışır. Ayarlar menüsünden açık rıza verirseniz ("Anonim Kullanım Analitiği"), sadece vardiya tamamlama oranları cihazda yerel olarak tutulur. Firebase, Google Analytics veya Facebook SDK gibi harici izleyiciler kullanılmaz.</li>
+      </ul>
+
+      <h2>2. Reklamlar ve Uygulama İçi Satın Alma</h2>
+      <ul>
+        <li><strong>Reklamlar (Google AdMob):</strong> Oyun ücretsizdir ve Google AdMob aracılığıyla reklam gösterir: vardiyalar arasında tam ekran geçiş reklamı ve oyuncunun kendi isteğiyle başlattığı ödüllü video. Vardiya oynanırken reklam gösterilmez. AdMob; reklam sunumu, sıklık sınırı ve sahtekarlık tespiti için cihaz reklam kimliğini (Android'de Advertising ID, iOS'ta izin verildiğinde IDFA), IP adresini ve etkileşimleri işleyebilir. Ayrıntılar için: <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">Google İş Ortağı Gizlilik Politikası</a>.</li>
+        <li><strong>Onay ve İzin Yönetimi:</strong> Avrupa Ekonomik Alanı (EEA), Birleşik Krallık ve İsviçre'deki kullanıcılara Google Kullanıcı Mesajlaşma Platformu (UMP) ile onay sorulur. iOS'ta reklam kimliği yalnızca Uygulama Takibi Şeffaflığı (ATT) penceresinde izin verirseniz kullanılır. İzinlerinizi dilediğiniz zaman cihaz ayarlarından değiştirebilirsiniz.</li>
+        <li><strong>Reklamları Kaldır (In-App Purchase):</strong> Tek seferlik "Reklamları Kaldır" (<code>com.safak.hospitalshift.removeads</code>) satın alımı yapıldığında reklam SDK'sı tamamen devre dışı kalır. Tüm ödüllü bonuslar reklamsız verilir.</li>
+        <li><strong>Ödeme Güvenliği:</strong> Satın alma işlemleri tamamen Apple App Store ve Google Play Store altyapısıyla yürütülür. Kredi kartı veya ödeme bilgileriniz bizim tarafımızdan asla görülmez ve tutulmaz.</li>
+        <li><strong>Harici Paylaşım:</strong> Kayıt yedeğinizi dışa veya içe aktarırken sistem standart paylaşım araçları kullanılır; veriler yalnızca sizin tercih ettiğiniz konuma gider.</li>
+      </ul>
+
+      <h2>3. Çocukların Gizliliği</h2>
+      <p>Hospital Shift 13 yaşın altındaki çocuklara yönelik değildir ve bilerek çocuklardan kişisel veri toplamaz. İnternet bağlantısı olmadan da çevrimdışı oynanabilir.</p>
+
+      <h2>4. Kurgusal Tıbbi İçerik Bildirimi</h2>
+      <p>Hospital Shift bir strateji ve eğlence simülasyonudur. Oyundaki tüm hastalık isimleri (ör. "Vardon Sendromu"), semptomlar ve tedavi seçenekleri tamamen <strong>kurgusaldır</strong>. Bu uygulama bir tıbbi cihaz veya teşhis aracı değildir; hiçbir şekilde gerçek tıbbi tavsiye, muayene veya tanı yerine geçemez.</p>
+
+      <h2>5. İletişim</h2>
+      <div class="contact-card">
+        <p>Gizlilik politikamız veya haklarınız ile ilgili her türlü soru ve talebiniz için doğrudan bizimle iletişime geçebilirsiniz:</p>
+        <p><strong>Geliştirici:</strong> Şafak Çavuş</p>
+        <p><strong>İletişim E-posta:</strong> <a href="mailto:safakcvs@gmail.com">safakcvs@gmail.com</a></p>
+        <p><strong>Yayın Adresi:</strong> <a href="https://safakcavas.github.io/hospital-shift/privacy.html">https://safakcavas.github.io/hospital-shift/privacy.html</a></p>
+      </div>
+    </article>
+
+    <!-- ENGLISH SECTION -->
+    <article id="lang-en" class="card section-en">
+      <h1>Hospital Shift — Privacy Policy</h1>
+      <div class="date-meta">Last Updated: October 18, 2026</div>
+
+      <div class="highlight-box">
+        <strong>Summary:</strong> Hospital Shift respects your privacy. We do not require accounts, and we do not collect your name, email, phone number, location, or sensitive personal data. Your game progress is saved locally on your device.
+      </div>
+
+      <h2>1. Information We Process & Data Storage</h2>
+      <ul>
+        <li><strong>No Account Required:</strong> Hospital Shift requires no account registration. We never ask for or store your name, email, phone number, or physical location.</li>
+        <li><strong>Local Storage (Game Saves):</strong> All shift progress, unlockables, and settings are stored locally on your device using <code>AsyncStorage</code>. No save data is uploaded to remote servers.</li>
+        <li><strong>Optional Anonymous Analytics (Opt-in):</strong> By default, all telemetry is disabled. If you opt-in via Settings, only anonymous shift completion metrics are stored locally on the device. We do not use third-party trackers such as Firebase, Google Analytics, or Facebook SDK.</li>
+      </ul>
+
+      <h2>2. Advertisements & In-App Purchases</h2>
+      <ul>
+        <li><strong>Ads (Google AdMob):</strong> Hospital Shift is free to play and supported by Google AdMob: interstitial ads between completed shifts, and optional rewarded videos you may voluntarily watch. Ads never interrupt active gameplay during shifts. AdMob may process your device's advertising identifier (Android Advertising ID, or iOS IDFA if permitted), IP address, and app usage details for fraud prevention and ad delivery. See <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">How Google uses information from sites or apps that use our services</a>.</li>
+        <li><strong>Consent & Privacy Controls:</strong> For users in the European Economic Area (EEA), UK, and Switzerland, consent is gathered via Google's User Messaging Platform (UMP). On iOS, tracking is requested through the App Tracking Transparency (ATT) prompt. You can adjust your consent choices anytime in your device settings.</li>
+        <li><strong>Remove Ads (In-App Purchase):</strong> A single one-time purchase (<code>com.safak.hospitalshift.removeads</code>) permanently disables the AdMob SDK, and grants all rewarded bonuses without viewing ads.</li>
+        <li><strong>Payment Processing:</strong> All transactions are securely processed by the Apple App Store or Google Play Store. We do not collect, view, or store payment or credit card details.</li>
+        <li><strong>Save Import/Export:</strong> File export and import use native system dialogs and only transfer data to destinations you explicitly select.</li>
+      </ul>
+
+      <h2>3. Children's Privacy</h2>
+      <p>Hospital Shift is not directed toward children under 13, and does not knowingly collect personal data from children. The game can be played fully offline without an internet connection.</p>
+
+      <h2>4. Fictional Medical Disclaimer</h2>
+      <p>Hospital Shift is a fictional simulation and strategy game. All medical terms, condition names (e.g. "Vardon Syndrome"), and treatment protocols are entirely <strong>fictional</strong>. This game is not a medical device, diagnosis tool, or substitute for professional medical care.</p>
+
+      <h2>5. Contact Information</h2>
+      <div class="contact-card">
+        <p>If you have any questions or feedback regarding this Privacy Policy, please contact:</p>
+        <p><strong>Developer:</strong> Şafak Çavuş</p>
+        <p><strong>Email:</strong> <a href="mailto:safakcvs@gmail.com">safakcvs@gmail.com</a></p>
+        <p><strong>Published URL:</strong> <a href="https://safakcavas.github.io/hospital-shift/privacy.html">https://safakcavas.github.io/hospital-shift/privacy.html</a></p>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Şafak Çavuş. All rights reserved. Hospital Shift.</p>
+  </footer>
+
+  <script>
+    function showLang(lang) {
+      const trSec = document.getElementById('lang-tr');
+      const enSec = document.getElementById('lang-en');
+      const btnTr = document.getElementById('btn-tr');
+      const btnEn = document.getElementById('btn-en');
+      if (lang === 'en') {
+        trSec.style.display = 'none';
+        enSec.style.display = 'block';
+        btnTr.classList.remove('active');
+        btnEn.classList.add('active');
+      } else {
+        trSec.style.display = 'block';
+        enSec.style.display = 'none';
+        btnEn.classList.remove('active');
+        btnTr.classList.add('active');
+      }
+    }
+    // Auto-detect browser language if English
+    if (navigator.language && !navigator.language.startsWith('tr')) {
+      showLang('en');
+    }
+  </script>
+</body>
+</html>
