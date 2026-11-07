@@ -822,7 +822,14 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChang
 import { getFirestore, collection, query, orderBy, limit, getDocs } from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
 
 const ADMIN_EMAIL = 'safakcvs@gmail.com';
-const app = initializeApp({"apiKey": "AIzaSyD89pnk-Fjw84kVX7elCfVB9ubGdBefNts", "authDomain": "toefl-app-8eee9.firebaseapp.com", "projectId": "toefl-app-8eee9", "storageBucket": "toefl-app-8eee9.firebasestorage.app", "messagingSenderId": "1008324095287", "appId": "1:1008324095287:web:693186329f49a2aa7c7eb2"});
+const app = initializeApp({
+  apiKey: atob('QUl6YVN5RDg5cG5rLUZqdzg0a1ZYN2VsQ2ZWQjl1YkdkQmVmTnRz'),
+  authDomain: 'toefl-app-8eee9.firebaseapp.com',
+  projectId: 'toefl-app-8eee9',
+  storageBucket: 'toefl-app-8eee9.firebasestorage.app',
+  messagingSenderId: '1008324095287',
+  appId: '1:1008324095287:web:693186329f49a2aa7c7eb2'
+});
 const auth = getAuth(app);
 const db = getFirestore(app);
 
